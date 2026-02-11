@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { ShoppingCart, User, Search, Menu, X, Store, LogOut, LogIn } from 'lucide-react'
+import { useAuth } from '@/lib/hooks/useAuth'
 
 interface CartItem {
   id: string
@@ -13,8 +14,8 @@ export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [cartCount, setCartCount] = useState(0)
-  const [user, setUser] = useState<any>(null)
   const [mounted, setMounted] = useState(false)
+  const { user, profile, signOut, loading: authLoading } = useAuth()
 
   useEffect(() => {
     setMounted(true)
@@ -101,22 +102,43 @@ export default function Header() {
             <div className="relative group">
               <button className="flex items-center gap-2 p-2 hover:bg-gray-100 rounded-lg transition text-gray-700 group-hover:text-amber-600">
                 <User size={24} />
-                <span className="hidden lg:inline text-sm font-medium">Account</span>
+                <span className="hidden lg:inline text-sm font-medium">
+                  {user ? (profile?.full_name?.split(' ')[0] || 'Account') : 'Account'}
+                </span>
               </button>
-              <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-xl py-2 hidden group-hover:block">
-                <Link href="/profile" className="block px-4 py-2 hover:bg-gray-50 text-gray-900 font-medium">
-                  My Profile
-                </Link>
-                <Link href="/orders" className="block px-4 py-2 hover:bg-gray-50 text-gray-900">
-                  My Orders
-                </Link>
-                <Link href="/vendor/dashboard" className="block px-4 py-2 hover:bg-gray-50 text-gray-900">
-                  Vendor Dashboard
-                </Link>
-                <hr className="my-2" />
-                <button className="block w-full text-left px-4 py-2 hover:bg-gray-50 text-red-600 font-medium">
-                  Sign Out
-                </button>
+              <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-xl py-2 hidden group-hover:block z-50">
+                {user ? (
+                  <>
+                    <div className="px-4 py-2 border-b mb-1">
+                      <p className="font-medium text-gray-900 text-sm">{profile?.full_name || 'User'}</p>
+                      <p className="text-xs text-gray-500 truncate">{profile?.email}</p>
+                    </div>
+                    <Link href="/orders" className="block px-4 py-2 hover:bg-gray-50 text-gray-900">
+                      My Orders
+                    </Link>
+                    {profile?.role === 'vendor' && (
+                      <Link href="/vendor/dashboard" className="block px-4 py-2 hover:bg-gray-50 text-gray-900">
+                        Vendor Dashboard
+                      </Link>
+                    )}
+                    <hr className="my-2" />
+                    <button
+                      onClick={signOut}
+                      className="block w-full text-left px-4 py-2 hover:bg-gray-50 text-red-600 font-medium"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/auth/login" className="block px-4 py-2 hover:bg-gray-50 text-gray-900 font-medium">
+                      Sign In
+                    </Link>
+                    <Link href="/auth/register" className="block px-4 py-2 hover:bg-gray-50 text-amber-600 font-medium">
+                      Create Account
+                    </Link>
+                  </>
+                )}
               </div>
             </div>
 

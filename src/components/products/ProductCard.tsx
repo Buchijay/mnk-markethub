@@ -2,7 +2,9 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { Star, ShoppingCart } from 'lucide-react'
+import toast from 'react-hot-toast'
 import type { ProductWithVendor } from '@/lib/types/database.types'
 
 interface ProductCardProps {
@@ -14,9 +16,36 @@ export default function ProductCard({ product, view }: ProductCardProps) {
   const mainImage = product.images && product.images.length > 0 ? product.images[0] : null
   const hasDiscount = product.compare_at_price && product.compare_at_price > product.price
 
+  const formatPrice = (price: number) =>
+    new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(price)
+
+  const addToCart = (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    const cart = JSON.parse(localStorage.getItem('cart') || '[]')
+    const existingIndex = cart.findIndex((item: any) => item.id === product.id)
+    if (existingIndex >= 0) {
+      cart[existingIndex].quantity += 1
+    } else {
+      cart.push({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: mainImage || '',
+        quantity: 1,
+        vendor_id: product.vendor_id,
+        vendor_name: product.vendor?.business_name || 'Unknown',
+        slug: product.slug,
+      })
+    }
+    localStorage.setItem('cart', JSON.stringify(cart))
+    window.dispatchEvent(new Event('cartUpdated'))
+    toast.success('Added to cart!')
+  }
+
   if (view === 'list') {
     return (
-      <div className="bg-white rounded-lg shadow-md p-4 flex gap-4">
+      <Link href={`/products/${product.slug}`} className="bg-white rounded-lg shadow-md p-4 flex gap-4 hover:shadow-lg transition-shadow">
         <div className="w-32 h-32 flex-shrink-0 bg-gray-200 rounded-lg overflow-hidden relative">
           {mainImage ? (
             <Image
@@ -36,22 +65,22 @@ export default function ProductCard({ product, view }: ProductCardProps) {
           <p className="text-gray-600 text-sm mb-2 line-clamp-2">{product.short_description || product.description}</p>
           <div className="flex items-center justify-between">
             <div>
-              <div className="text-2xl font-bold text-blue-600">\</div>
+              <div className="text-2xl font-bold text-amber-600">{formatPrice(product.price)}</div>
               {hasDiscount && (
-                <div className="text-sm text-gray-500 line-through">\</div>
+                <div className="text-sm text-gray-500 line-through">{formatPrice(product.compare_at_price!)}</div>
               )}
             </div>
-            <button className="bg-blue-600 text-white p-2 rounded-lg hover:bg-blue-700">
+            <button onClick={addToCart} className="bg-amber-600 text-white p-2 rounded-lg hover:bg-amber-700">
               <ShoppingCart size={20} />
             </button>
           </div>
         </div>
-      </div>
+      </Link>
     )
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+    <Link href={`/products/${product.slug}`} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       <div className="relative w-full h-48 bg-gray-200">
         {mainImage ? (
           <Image
@@ -96,18 +125,18 @@ export default function ProductCard({ product, view }: ProductCardProps) {
 
         <div className="flex items-center justify-between mb-4">
           <div>
-            <div className="text-2xl font-bold text-blue-600">\</div>
+            <div className="text-2xl font-bold text-amber-600">{formatPrice(product.price)}</div>
             {hasDiscount && (
-              <div className="text-sm text-gray-500 line-through">\</div>
+              <div className="text-sm text-gray-500 line-through">{formatPrice(product.compare_at_price!)}</div>
             )}
           </div>
         </div>
 
-        <button className="w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2">
+        <button onClick={addToCart} className="w-full bg-amber-600 text-white py-2 rounded-lg font-medium hover:bg-amber-700 transition-colors flex items-center justify-center gap-2">
           <ShoppingCart size={18} />
           Add to Cart
         </button>
       </div>
-    </div>
+    </Link>
   )
 }
