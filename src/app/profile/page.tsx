@@ -21,6 +21,7 @@ import {
 export default function ProfilePage() {
   const router = useRouter()
   const { user, profile, loading } = useAuth()
+  const [mounted, setMounted] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
   const [formData, setFormData] = useState({
@@ -29,8 +30,16 @@ export default function ProfilePage() {
     avatar_url: '',
   })
 
+  // Ensure client-side hydration is complete
   useEffect(() => {
-    if (!loading && !user) {
+    setMounted(true)
+  }, [])
+
+  // Debug logging
+  console.log('Profile Page State:', { mounted, loading, user: !!user, profile: !!profile })
+
+  useEffect(() => {
+    if (mounted && !loading && !user) {
       router.push('/auth/login')
     } else if (profile) {
       setFormData({
@@ -39,7 +48,7 @@ export default function ProfilePage() {
         avatar_url: profile.avatar_url || '',
       })
     }
-  }, [user, profile, loading, router])
+  }, [mounted, user, profile, loading, router])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
@@ -85,27 +94,39 @@ export default function ProfilePage() {
     }
   }
 
-  if (loading) {
+  if (!mounted || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
       </div>
     )
   }
 
-  if (!user) return null
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <p className="text-gray-600 mb-4">Please log in to view your profile</p>
+          <button
+            onClick={() => router.push('/auth/login')}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+          >
+            Go to Login
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   if (!profile) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <p className="text-gray-600 mb-4">Profile data not found</p>
-          <button
-            onClick={() => router.push('/')}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-          >
-            Go Home
-          </button>
+          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading profile...</p>
         </div>
       </div>
     )

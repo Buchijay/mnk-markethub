@@ -16,10 +16,12 @@ export function useAuth() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    console.log('useAuth: Starting getUser')
     getUser()
 
     const { data: authListener } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        console.log('useAuth: Auth state changed:', event, !!session?.user)
         if (session?.user) {
           setUser(session.user)
           await getProfile(session.user.id, session.user.email || '')
@@ -37,7 +39,9 @@ export function useAuth() {
   }, [])
 
   async function getUser() {
+    console.log('useAuth: getUser called')
     const { data: { user } } = await supabase.auth.getUser()
+    console.log('useAuth: getUser result:', !!user)
     setUser(user)
     if (user) {
       await getProfile(user.id, user.email || '')
@@ -46,12 +50,15 @@ export function useAuth() {
   }
 
   async function getProfile(userId: string, email: string = '') {
+    console.log('useAuth: getProfile called for:', userId)
     try {
       const { data, error } = await supabase
         .from('profiles')
         .select('*, vendor:vendors(*)')
         .eq('id', userId)
         .single()
+      
+      console.log('useAuth: getProfile result:', { data: !!data, error })
       
       if (error) {
         console.error('Error fetching profile:', error)
