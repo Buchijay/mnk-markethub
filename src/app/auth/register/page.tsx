@@ -117,7 +117,7 @@ export default function RegisterPage() {
             <UserPlus className="text-amber-600" size={32} />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
-          <p className="text-gray-600">Join MNK Marketplace today</p>
+          <p className="text-gray-600">Join MK Solution Ltd today</p>
         </div>
 
         {/* Form Card */}
@@ -125,7 +125,7 @@ export default function RegisterPage() {
           <form onSubmit={handleRegister} className="space-y-5">
             {/* Full Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Full Name</label>
+              <label className="block text-sm font-semibold text-gray-800 mb-1.5">Full Name</label>
               <div className="relative">
                 <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
@@ -133,7 +133,7 @@ export default function RegisterPage() {
                   value={formData.full_name}
                   onChange={(e) => updateField('full_name', e.target.value)}
                   placeholder="John Doe"
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition ${
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition ${
                     errors.full_name ? 'border-red-400' : 'border-gray-300'
                   }`}
                 />
@@ -143,7 +143,7 @@ export default function RegisterPage() {
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Email Address</label>
+              <label className="block text-sm font-semibold text-gray-800 mb-1.5">Email Address</label>
               <div className="relative">
                 <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
@@ -151,7 +151,7 @@ export default function RegisterPage() {
                   value={formData.email}
                   onChange={(e) => updateField('email', e.target.value)}
                   placeholder="you@example.com"
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition ${
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition ${
                     errors.email ? 'border-red-400' : 'border-gray-300'
                   }`}
                 />
@@ -161,7 +161,7 @@ export default function RegisterPage() {
 
             {/* Phone */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Phone Number</label>
+              <label className="block text-sm font-semibold text-gray-800 mb-1.5">Phone Number</label>
               <div className="relative">
                 <Phone size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
@@ -169,7 +169,7 @@ export default function RegisterPage() {
                   value={formData.phone}
                   onChange={(e) => updateField('phone', e.target.value)}
                   placeholder="+234 800 000 0000"
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition ${
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition ${
                     errors.phone ? 'border-red-400' : 'border-gray-300'
                   }`}
                 />
@@ -179,7 +179,7 @@ export default function RegisterPage() {
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+              <label className="block text-sm font-semibold text-gray-800 mb-1.5">Password</label>
               <div className="relative">
                 <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
@@ -187,7 +187,7 @@ export default function RegisterPage() {
                   value={formData.password}
                   onChange={(e) => updateField('password', e.target.value)}
                   placeholder="At least 8 characters"
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition ${
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition ${
                     errors.password ? 'border-red-400' : 'border-gray-300'
                   }`}
                 />
@@ -204,7 +204,7 @@ export default function RegisterPage() {
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Confirm Password</label>
+              <label className="block text-sm font-semibold text-gray-800 mb-1.5">Confirm Password</label>
               <div className="relative">
                 <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                 <input
@@ -212,7 +212,7 @@ export default function RegisterPage() {
                   value={formData.confirmPassword}
                   onChange={(e) => updateField('confirmPassword', e.target.value)}
                   placeholder="Re-enter your password"
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition ${
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition ${
                     errors.confirmPassword ? 'border-red-400' : 'border-gray-300'
                   }`}
                 />

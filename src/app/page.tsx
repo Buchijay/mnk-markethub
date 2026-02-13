@@ -105,7 +105,7 @@ export default function HomePage() {
 
               <h1 className="text-5xl md:text-7xl font-bold mb-4">
                 <span className="bg-gradient-to-r from-amber-300 via-amber-200 to-amber-300 bg-clip-text text-transparent">
-                  MNK Marketplace
+                  MK Solution Ltd
                 </span>
               </h1>
               <p className="text-2xl md:text-3xl text-gray-200 mb-6">

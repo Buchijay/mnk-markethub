@@ -46,6 +46,16 @@ export interface Database {
         Insert: Omit<Order, 'id' | 'created_at' | 'updated_at'>
         Update: Partial<Omit<Order, 'id' | 'created_at'>>
       }
+      favorites: {
+        Row: Favorite
+        Insert: Omit<Favorite, 'id' | 'created_at'>
+        Update: Partial<Omit<Favorite, 'id' | 'created_at'>>
+      }
+      messages: {
+        Row: Message
+        Insert: Omit<Message, 'id' | 'created_at'>
+        Update: Partial<Omit<Message, 'id'>>
+      }
     }
   }
 }
@@ -316,4 +326,32 @@ export type PropertyWithVendor = Property & {
 export type VehicleWithVendor = Vehicle & {
   vendor: Vendor | null
   category: { id: string; name: string; slug: string } | null
+}
+
+export type Favorite = {
+  id: string
+  user_id: string
+  item_type: 'product' | 'property' | 'vehicle'
+  item_id: string
+  created_at: string
+}
+
+export type Message = {
+  id: string
+  sender_id: string
+  receiver_id: string
+  content: string
+  is_read: boolean
+  created_at: string
+}
+
+export type Conversation = {
+  id: string
+  user_id: string
+  vendor_id: string
+  last_message: string | null
+  last_message_at: string | null
+  unread_count: number
+  created_at: string
+  updated_at: string
 }

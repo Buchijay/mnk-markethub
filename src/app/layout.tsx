@@ -1,31 +1,29 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono, Inter } from "next/font/google"
+import localFont from "next/font/local"
 import "./globals.css"
 import Header from "@/components/layout/Header"
 import Footer from "@/components/layout/Footer"
-import { Toaster } from "react-hot-toast"
+import { Providers } from "@/components/layout/Providers"
 
-const geistSans = Geist({
+const geistSans = localFont({
+  src: "./fonts/Geist-Variable.woff2",
   variable: "--font-geist-sans",
-  subsets: ["latin"],
 })
 
-const geistMono = Geist_Mono({
+const geistMono = localFont({
+  src: "./fonts/GeistMono-Variable.woff2",
   variable: "--font-geist-mono",
-  subsets: ["latin"],
 })
-
-const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "MNK Marketplace - Multi-Vendor Platform",
+  title: "MK Solution Ltd - Multi-Vendor Platform",
   description: "Discover amazing products from trusted vendors. Fast delivery, secure payments, and excellent customer service.",
   keywords: ["marketplace", "shopping", "vendors", "products", "ecommerce"],
   openGraph: {
-    title: "MNK Marketplace",
+    title: "MK Solution Ltd",
     description: "Your trusted multi-vendor marketplace",
-    url: "https://mnk-marketplace.com",
-    siteName: "MNK Marketplace",
+    url: "https://mksolution.com",
+    siteName: "MK Solution Ltd",
     locale: "en_US",
     type: "website",
   },
@@ -38,7 +36,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.className} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <div className="min-h-screen flex flex-col bg-white">
           <Header />
           <main className="flex-1">
@@ -46,7 +44,7 @@ export default function RootLayout({
           </main>
           <Footer />
         </div>
-        <Toaster position="top-right" />
+        <Providers />
       </body>
     </html>
   )

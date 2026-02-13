@@ -104,7 +104,7 @@ export default function CheckoutPage() {
     setLoading(true)
     try {
       // Generate order number
-      const orderNumber = `MNK-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
+      const orderNumber = `MKS-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
 
       // Create order in Supabase
       const { data: order, error: orderError } = await (supabase as any)

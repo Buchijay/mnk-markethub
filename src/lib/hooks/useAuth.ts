@@ -1,9 +1,8 @@
 // lib/hooks/useAuth.ts
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { supabase } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
 import type { User } from '@supabase/supabase-js'
 import type { Profile, Vendor } from '@/lib/types/database.types'
 
@@ -15,7 +14,6 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null)
   const [profile, setProfile] = useState<ProfileWithVendor | null>(null)
   const [loading, setLoading] = useState(true)
-  const router = useRouter()
 
   useEffect(() => {
     getUser()
@@ -24,7 +22,7 @@ export function useAuth() {
       async (event, session) => {
         if (session?.user) {
           setUser(session.user)
-          await getProfile(session.user.id)
+          await getProfile(session.user.id, session.user.email || '')
         } else {
           setUser(null)
           setProfile(null)
@@ -42,23 +40,74 @@ export function useAuth() {
     const { data: { user } } = await supabase.auth.getUser()
     setUser(user)
     if (user) {
-      await getProfile(user.id)
+      await getProfile(user.id, user.email || '')
     }
     setLoading(false)
   }
 
-  async function getProfile(userId: string) {
-    const { data } = await supabase
-      .from('profiles')
-      .select('*, vendor:vendors(*)')
-      .eq('id', userId)
-      .single()
-    setProfile(data as ProfileWithVendor | null)
+  async function getProfile(userId: string, email: string = '') {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*, vendor:vendors(*)')
+        .eq('id', userId)
+        .single()
+      
+      if (error) {
+        console.error('Error fetching profile:', error)
+        
+        // If profile doesn't exist, create a default one
+        if (error.code === 'PGRST116') {
+          await createDefaultProfile(userId, email)
+          return
+        }
+        
+        setProfile(null)
+        return
+      }
+      
+      setProfile(data as ProfileWithVendor | null)
+    } catch (error) {
+      console.error('Unexpected error fetching profile:', error)
+      setProfile(null)
+    }
+  }
+
+  async function createDefaultProfile(userId: string, email: string) {
+    try {
+      const { data, error } = await (supabase
+        .from('profiles')
+        .insert({
+          id: userId,
+          email: email,
+          full_name: '',
+          phone: null,
+          avatar_url: null,
+          role: 'customer',
+          is_active: true,
+          email_verified: false,
+          metadata: {},
+        } as any)
+        .select('*, vendor:vendors(*)')
+        .single() as any)
+      
+      if (error) {
+        console.error('Error creating default profile:', error)
+        setProfile(null)
+        return
+      }
+      
+      setProfile(data as ProfileWithVendor | null)
+    } catch (error) {
+      console.error('Unexpected error creating profile:', error)
+      setProfile(null)
+    }
   }
 
   async function signOut() {
     await supabase.auth.signOut()
-    router.push('/')
+    // Use window.location for navigation to ensure router is ready
+    window.location.href = '/'
   }
 
   return {

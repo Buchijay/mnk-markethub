@@ -361,7 +361,7 @@ export default function VendorRegisterPage() {
               {!user && (
                 <>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-gray-800 mb-2">
                       Email Address *
                     </label>
                     <div className="relative">
@@ -370,7 +370,7 @@ export default function VendorRegisterPage() {
                         type="email"
                         value={formData.email}
                         onChange={e => updateField('email', e.target.value)}
-                        className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
+                        className={`w-full pl-10 pr-4 py-3 border rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
                           errors.email ? 'border-red-500' : 'border-gray-300'
                         }`}
                         placeholder="you@example.com"
@@ -381,7 +381,7 @@ export default function VendorRegisterPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-semibold text-gray-800 mb-2">
                         Password *
                       </label>
                       <div className="relative">
@@ -389,7 +389,7 @@ export default function VendorRegisterPage() {
                           type={showPassword ? 'text' : 'password'}
                           value={formData.password}
                           onChange={e => updateField('password', e.target.value)}
-                          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition pr-10 ${
+                          className={`w-full px-4 py-3 border rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition pr-10 ${
                             errors.password ? 'border-red-500' : 'border-gray-300'
                           }`}
                           placeholder="Min. 8 characters"
@@ -407,14 +407,14 @@ export default function VendorRegisterPage() {
                       )}
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-semibold text-gray-800 mb-2">
                         Confirm Password *
                       </label>
                       <input
                         type="password"
                         value={formData.confirmPassword}
                         onChange={e => updateField('confirmPassword', e.target.value)}
-                        className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
+                        className={`w-full px-4 py-3 border rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
                           errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
                         }`}
                         placeholder="Repeat password"
@@ -428,7 +428,7 @@ export default function VendorRegisterPage() {
               )}
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-800 mb-2">
                   Full Name *
                 </label>
                 <div className="relative">
@@ -437,7 +437,7 @@ export default function VendorRegisterPage() {
                     type="text"
                     value={formData.full_name}
                     onChange={e => updateField('full_name', e.target.value)}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
                       errors.full_name ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="John Doe"
@@ -447,7 +447,7 @@ export default function VendorRegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-800 mb-2">
                   Phone Number *
                 </label>
                 <div className="relative">
@@ -456,7 +456,7 @@ export default function VendorRegisterPage() {
                     type="tel"
                     value={formData.phone}
                     onChange={e => updateField('phone', e.target.value)}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
                       errors.phone ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="+234 800 123 4567"
@@ -476,7 +476,7 @@ export default function VendorRegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-800 mb-2">
                   Business Name *
                 </label>
                 <div className="relative">
@@ -488,7 +488,7 @@ export default function VendorRegisterPage() {
                       updateField('business_name', e.target.value)
                       updateField('slug', generateSlug(e.target.value))
                     }}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
                       errors.business_name ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Your Business Name"
@@ -500,25 +500,25 @@ export default function VendorRegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-800 mb-2">
                   Store URL
                 </label>
                 <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-amber-500">
                   <span className="bg-gray-100 px-4 py-3 text-gray-500 text-sm border-r">
-                    mnk-marketplace.com/store/
+                    mksolution.com/store/
                   </span>
                   <input
                     type="text"
                     value={formData.slug}
                     onChange={e => updateField('slug', generateSlug(e.target.value))}
-                    className="flex-1 px-4 py-3 focus:outline-none"
+                    className="flex-1 px-4 py-3 text-gray-900 placeholder-gray-500 focus:outline-none"
                     placeholder="your-store"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-800 mb-2">
                   Business Type * <span className="text-gray-400 font-normal">(select all that apply)</span>
                 </label>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -546,14 +546,14 @@ export default function VendorRegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-800 mb-2">
                   Business Description *
                 </label>
                 <textarea
                   value={formData.description}
                   onChange={e => updateField('description', e.target.value)}
                   rows={4}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition resize-none ${
+                  className={`w-full px-4 py-3 border rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition resize-none ${
                     errors.description ? 'border-red-500' : 'border-gray-300'
                   }`}
                   placeholder="Describe your business, what you sell, and what makes you unique..."
@@ -579,7 +579,7 @@ export default function VendorRegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-800 mb-2">
                   Street Address
                 </label>
                 <div className="relative">
@@ -588,7 +588,7 @@ export default function VendorRegisterPage() {
                     type="text"
                     value={formData.street}
                     onChange={e => updateField('street', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
                     placeholder="123 Main Street"
                   />
                 </div>
@@ -596,12 +596,12 @@ export default function VendorRegisterPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">City *</label>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">City *</label>
                   <input
                     type="text"
                     value={formData.city}
                     onChange={e => updateField('city', e.target.value)}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
+                    className={`w-full px-4 py-3 border rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
                       errors.city ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Lagos"
@@ -609,12 +609,12 @@ export default function VendorRegisterPage() {
                   {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">State *</label>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">State *</label>
                   <input
                     type="text"
                     value={formData.state}
                     onChange={e => updateField('state', e.target.value)}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
+                    className={`w-full px-4 py-3 border rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
                       errors.state ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Lagos State"
@@ -625,12 +625,12 @@ export default function VendorRegisterPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Country *</label>
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">Country *</label>
                   <input
                     type="text"
                     value={formData.country}
                     onChange={e => updateField('country', e.target.value)}
-                    className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
+                    className={`w-full px-4 py-3 border rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
                       errors.country ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Nigeria"
@@ -638,14 +638,14 @@ export default function VendorRegisterPage() {
                   {errors.country && <p className="text-red-500 text-sm mt-1">{errors.country}</p>}
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">
                     Postal Code
                   </label>
                   <input
                     type="text"
                     value={formData.postal_code}
                     onChange={e => updateField('postal_code', e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
                     placeholder="100001"
                   />
                 </div>
@@ -655,7 +655,7 @@ export default function VendorRegisterPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">
                     Business Email
                   </label>
                   <div className="relative">
@@ -664,13 +664,13 @@ export default function VendorRegisterPage() {
                       type="email"
                       value={formData.business_email}
                       onChange={e => updateField('business_email', e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
                       placeholder="business@example.com"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-800 mb-2">
                     Business Phone
                   </label>
                   <div className="relative">
@@ -679,7 +679,7 @@ export default function VendorRegisterPage() {
                       type="tel"
                       value={formData.business_phone}
                       onChange={e => updateField('business_phone', e.target.value)}
-                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
                       placeholder="+234 800 123 4567"
                     />
                   </div>
@@ -687,7 +687,7 @@ export default function VendorRegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-800 mb-2">
                   Website (optional)
                 </label>
                 <div className="relative">
@@ -696,7 +696,7 @@ export default function VendorRegisterPage() {
                     type="url"
                     value={formData.website}
                     onChange={e => updateField('website', e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition"
                     placeholder="https://yourbusiness.com"
                   />
                 </div>
@@ -727,13 +727,13 @@ export default function VendorRegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-800 mb-2">
                   ID Type *
                 </label>
                 <select
                   value={formData.id_type}
                   onChange={e => updateField('id_type', e.target.value)}
-                  className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition bg-white ${
+                  className={`w-full px-4 py-3 border rounded-lg text-gray-900 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition bg-white ${
                     errors.id_type ? 'border-red-500' : 'border-gray-300'
                   }`}
                 >
@@ -748,7 +748,7 @@ export default function VendorRegisterPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                <label className="block text-sm font-semibold text-gray-800 mb-2">
                   ID Number *
                 </label>
                 <div className="relative">
@@ -757,7 +757,7 @@ export default function VendorRegisterPage() {
                     type="text"
                     value={formData.id_number}
                     onChange={e => updateField('id_number', e.target.value)}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg text-gray-900 placeholder-gray-500 focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition ${
                       errors.id_number ? 'border-red-500' : 'border-gray-300'
                     }`}
                     placeholder="Enter your ID number"

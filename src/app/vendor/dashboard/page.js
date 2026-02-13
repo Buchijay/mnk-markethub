@@ -87,8 +87,8 @@ export default function VendorDashboard() {
       <div className="container mx-auto px-4">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Vendor Dashboard</h1>
-          <p className="text-gray-600">
+          <h1 className="text-3xl font-bold mb-2 text-gray-900">Vendor Dashboard</h1>
+          <p className="text-gray-700">
             Welcome back, {profile?.vendor?.business_name}
           </p>
         </div>
@@ -100,10 +100,10 @@ export default function VendorDashboard() {
               <div className="bg-blue-100 p-3 rounded-lg">
                 <TrendingUp className="text-blue-600" size={24} />
               </div>
-              <span className="text-sm text-gray-600">This Month</span>
+              <span className="text-sm text-gray-700">This Month</span>
             </div>
-            <p className="text-3xl font-bold mb-1">₦{stats.revenue.toLocaleString()}</p>
-            <p className="text-sm text-gray-600">Total Revenue</p>
+            <p className="text-3xl font-bold mb-1 text-gray-900">₦{stats.revenue.toLocaleString()}</p>
+            <p className="text-sm text-gray-700 font-medium">Total Revenue</p>
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-6">
@@ -111,12 +111,12 @@ export default function VendorDashboard() {
               <div className="bg-green-100 p-3 rounded-lg">
                 <Eye className="text-green-600" size={24} />
               </div>
-              <span className="text-sm text-gray-600">All Time</span>
+              <span className="text-sm text-gray-700">All Time</span>
             </div>
-            <p className="text-3xl font-bold mb-1">
+            <p className="text-3xl font-bold mb-1 text-gray-900">
               {(stats.products.views + stats.properties.views + stats.vehicles.views).toLocaleString()}
             </p>
-            <p className="text-sm text-gray-600">Total Views</p>
+            <p className="text-sm text-gray-700 font-medium">Total Views</p>
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-6">
@@ -124,10 +124,10 @@ export default function VendorDashboard() {
               <div className="bg-yellow-100 p-3 rounded-lg">
                 <ShoppingCart className="text-yellow-600" size={24} />
               </div>
-              <span className="text-sm text-gray-600">Products</span>
+              <span className="text-sm text-gray-700">Products</span>
             </div>
-            <p className="text-3xl font-bold mb-1">{stats.products.sales}</p>
-            <p className="text-sm text-gray-600">Total Sales</p>
+            <p className="text-3xl font-bold mb-1 text-gray-900">{stats.products.sales}</p>
+            <p className="text-sm text-gray-700 font-medium">Total Sales</p>
           </div>
 
           <div className="bg-white rounded-lg shadow-md p-6">
@@ -135,10 +135,10 @@ export default function VendorDashboard() {
               <div className="bg-purple-100 p-3 rounded-lg">
                 <MessageSquare className="text-purple-600" size={24} />
               </div>
-              <span className="text-sm text-gray-600">Unread</span>
+              <span className="text-sm text-gray-700">Unread</span>
             </div>
-            <p className="text-3xl font-bold mb-1">{stats.messages}</p>
-            <p className="text-sm text-gray-600">Messages</p>
+            <p className="text-3xl font-bold mb-1 text-gray-900">{stats.messages}</p>
+            <p className="text-sm text-gray-700 font-medium">Messages</p>
           </div>
         </div>
 
@@ -151,28 +151,28 @@ export default function VendorDashboard() {
                 <div className="bg-blue-100 p-3 rounded-lg">
                   <Package className="text-blue-600" size={24} />
                 </div>
-                <h3 className="font-bold text-lg">Products</h3>
+                <h3 className="font-bold text-lg text-gray-900">Products</h3>
               </div>
-              <Link href="/vendor/products" className="text-blue-600 hover:underline text-sm">
+              <Link href="/vendor/products" className="text-blue-600 hover:underline text-sm font-medium">
                 Manage →
               </Link>
             </div>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-gray-600">Total Listings:</span>
-                <span className="font-semibold">{stats.products.total}</span>
+                <span className="text-gray-700">Total Listings:</span>
+                <span className="font-semibold text-gray-900">{stats.products.total}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Active:</span>
+                <span className="text-gray-700">Active:</span>
                 <span className="font-semibold text-green-600">{stats.products.active}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Views:</span>
-                <span className="font-semibold">{stats.products.views}</span>
+                <span className="text-gray-700">Views:</span>
+                <span className="font-semibold text-gray-900">{stats.products.views}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Sales:</span>
-                <span className="font-semibold">{stats.products.sales}</span>
+                <span className="text-gray-700">Sales:</span>
+                <span className="font-semibold text-gray-900">{stats.products.sales}</span>
               </div>
             </div>
             <Link
@@ -190,28 +190,28 @@ export default function VendorDashboard() {
                 <div className="bg-green-100 p-3 rounded-lg">
                   <HomeIcon className="text-green-600" size={24} />
                 </div>
-                <h3 className="font-bold text-lg">Properties</h3>
+                <h3 className="font-bold text-lg text-gray-900">Properties</h3>
               </div>
-              <Link href="/vendor/properties" className="text-green-600 hover:underline text-sm">
+              <Link href="/vendor/properties" className="text-green-600 hover:underline text-sm font-medium">
                 Manage →
               </Link>
             </div>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-gray-600">Total Listings:</span>
-                <span className="font-semibold">{stats.properties.total}</span>
+                <span className="text-gray-700">Total Listings:</span>
+                <span className="font-semibold text-gray-900">{stats.properties.total}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Active:</span>
+                <span className="text-gray-700">Active:</span>
                 <span className="font-semibold text-green-600">{stats.properties.active}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Views:</span>
-                <span className="font-semibold">{stats.properties.views}</span>
+                <span className="text-gray-700">Views:</span>
+                <span className="font-semibold text-gray-900">{stats.properties.views}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Inquiries:</span>
-                <span className="font-semibold">{stats.properties.inquiries}</span>
+                <span className="text-gray-700">Inquiries:</span>
+                <span className="font-semibold text-gray-900">{stats.properties.inquiries}</span>
               </div>
             </div>
             <Link
@@ -229,28 +229,28 @@ export default function VendorDashboard() {
                 <div className="bg-red-100 p-3 rounded-lg">
                   <Car className="text-red-600" size={24} />
                 </div>
-                <h3 className="font-bold text-lg">Vehicles</h3>
+                <h3 className="font-bold text-lg text-gray-900">Vehicles</h3>
               </div>
-              <Link href="/vendor/vehicles" className="text-red-600 hover:underline text-sm">
+              <Link href="/vendor/vehicles" className="text-red-600 hover:underline text-sm font-medium">
                 Manage →
               </Link>
             </div>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-gray-600">Total Listings:</span>
-                <span className="font-semibold">{stats.vehicles.total}</span>
+                <span className="text-gray-700">Total Listings:</span>
+                <span className="font-semibold text-gray-900">{stats.vehicles.total}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Active:</span>
+                <span className="text-gray-700">Active:</span>
                 <span className="font-semibold text-green-600">{stats.vehicles.active}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Views:</span>
-                <span className="font-semibold">{stats.vehicles.views}</span>
+                <span className="text-gray-700">Views:</span>
+                <span className="font-semibold text-gray-900">{stats.vehicles.views}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Inquiries:</span>
-                <span className="font-semibold">{stats.vehicles.inquiries}</span>
+                <span className="text-gray-700">Inquiries:</span>
+                <span className="font-semibold text-gray-900">{stats.vehicles.inquiries}</span>
               </div>
             </div>
             <Link
@@ -264,35 +264,35 @@ export default function VendorDashboard() {
 
         {/* Quick Actions */}
         <div className="bg-white rounded-lg shadow-md p-6">
-          <h3 className="font-bold text-lg mb-4">Quick Actions</h3>
+          <h3 className="font-bold text-lg mb-4 text-gray-900">Quick Actions</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Link
               href="/vendor/orders"
               className="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-600 transition text-center"
             >
-              <ShoppingCart className="mx-auto mb-2 text-gray-600" size={32} />
-              <p className="font-semibold">View Orders</p>
+              <ShoppingCart className="mx-auto mb-2 text-gray-700" size={32} />
+              <p className="font-semibold text-gray-900">View Orders</p>
             </Link>
             <Link
               href="/vendor/messages"
               className="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-600 transition text-center"
             >
-              <MessageSquare className="mx-auto mb-2 text-gray-600" size={32} />
-              <p className="font-semibold">Messages</p>
+              <MessageSquare className="mx-auto mb-2 text-gray-700" size={32} />
+              <p className="font-semibold text-gray-900">Messages</p>
             </Link>
             <Link
               href="/vendor/analytics"
               className="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-600 transition text-center"
             >
-              <TrendingUp className="mx-auto mb-2 text-gray-600" size={32} />
-              <p className="font-semibold">Analytics</p>
+              <TrendingUp className="mx-auto mb-2 text-gray-700" size={32} />
+              <p className="font-semibold text-gray-900">Analytics</p>
             </Link>
             <Link
               href="/vendor/settings"
               className="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-600 transition text-center"
             >
-              <DollarSign className="mx-auto mb-2 text-gray-600" size={32} />
-              <p className="font-semibold">Settings</p>
+              <DollarSign className="mx-auto mb-2 text-gray-700" size={32} />
+              <p className="font-semibold text-gray-900">Settings</p>
             </Link>
           </div>
         </div>

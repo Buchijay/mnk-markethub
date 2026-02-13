@@ -17,7 +17,7 @@ export default function Footer() {
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-amber-600 to-amber-500 flex items-center justify-center text-white font-bold text-lg">
                 M
               </div>
-              <h3 className="font-bold text-lg text-white">MNK Marketplace</h3>
+              <h3 className="font-bold text-lg text-white">MK Solution Ltd</h3>
             </div>
             <p className="text-sm text-gray-400 leading-relaxed">
               Your trusted multi-vendor marketplace connecting quality sellers with satisfied customers. Secure, reliable, and innovative shopping experience.
@@ -114,8 +114,8 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-3">
                 <Mail size={18} className="text-amber-500 flex-shrink-0 mt-1" />
-                <a href="mailto:support@mnkmarketplace.com" className="hover:text-amber-500 transition">
-                  support@mnkmarketplace.com
+                <a href="mailto:support@mksolution.com" className="hover:text-amber-500 transition">
+                  support@mksolution.com
                 </a>
               </li>
               <li className="flex items-start gap-3">
@@ -146,7 +146,7 @@ export default function Footer() {
 
           {/* Copyright */}
           <div className="text-center text-gray-500">
-            <p>&copy; {currentYear} MNK Marketplace. All rights reserved.</p>
+            <p>&copy; {currentYear} MK Solution Ltd. All rights reserved.</p>
             <p className="text-xs mt-1">Secure Shopping | Trusted Vendors | Quality Assured</p>
           </div>
 

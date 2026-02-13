@@ -15,21 +15,7 @@ export async function getProducts(
   try {
     let query = supabase
       .from('products')
-      .select(`
-        *,
-        vendor:vendor_id (
-          id,
-          business_name,
-          slug,
-          rating,
-          logo_url
-        ),
-        category:category_id (
-          id,
-          name,
-          slug
-        )
-      `, { count: 'exact' })
+      .select('*', { count: 'exact' })
 
     // Apply filters
     if (options.status) {
@@ -83,6 +69,37 @@ export async function getProducts(
       return { products: [], error, count: 0 }
     }
 
+    // Fetch vendor and category details separately for each product
+    if (data && data.length > 0) {
+      const enrichedData = await Promise.all(
+        data.map(async (product: any) => {
+          let vendor = null
+          let category = null
+
+          if (product.vendor_id) {
+            const { data: vendorData } = await supabase
+              .from('vendors')
+              .select('id, business_name, slug, rating, logo_url, total_reviews, total_sales, verification_status')
+              .eq('id', product.vendor_id)
+              .single()
+            vendor = vendorData
+          }
+
+          if (product.category_id) {
+            const { data: categoryData } = await supabase
+              .from('categories')
+              .select('id, name, slug')
+              .eq('id', product.category_id)
+              .single()
+            category = categoryData
+          }
+
+          return { ...product, vendor, category }
+        })
+      )
+      return { products: enrichedData, error: null, count: count || 0 }
+    }
+
     return { products: data || [], error: null, count: count || 0 }
   } catch (error) {
     console.error('Error in getProducts:', error)
@@ -94,27 +111,7 @@ export async function getProductBySlug(slug: string): Promise<ProductResponse> {
   try {
     const { data, error } = await supabase
       .from('products')
-      .select(`
-        *,
-        vendor:vendor_id (
-          id,
-          business_name,
-          slug,
-          rating,
-          total_reviews,
-          total_sales,
-          logo_url,
-          description,
-          verification_status
-        ),
-        category:category_id (
-          id,
-          name,
-          slug,
-          parent_id
-        ),
-        variants:product_variants(*)
-      `)
+      .select('*')
       .eq('slug', slug)
       .eq('status', 'active')
       .single()
@@ -124,7 +121,28 @@ export async function getProductBySlug(slug: string): Promise<ProductResponse> {
       return { product: null, error }
     }
 
-    return { product: data, error: null }
+    // Enrich with vendor and category data
+    let enrichedData: any = { ...(data as any) }
+
+    if ((data as any)?.vendor_id) {
+      const { data: vendorData } = await supabase
+        .from('vendors')
+        .select('id, business_name, slug, rating, total_reviews, total_sales, logo_url, description, verification_status')
+        .eq('id', (data as any).vendor_id)
+        .single()
+      enrichedData.vendor = vendorData
+    }
+
+    if ((data as any)?.category_id) {
+      const { data: categoryData } = await supabase
+        .from('categories')
+        .select('id, name, slug')
+        .eq('id', (data as any).category_id)
+        .single()
+      enrichedData.category = categoryData
+    }
+
+    return { product: enrichedData, error: null }
   } catch (error) {
     console.error('Error in getProductBySlug:', error)
     return { product: null, error }
@@ -148,15 +166,7 @@ export async function getRelatedProducts(
   try {
     const { data, error } = await supabase
       .from('products')
-      .select(`
-        *,
-        vendor:vendor_id (
-          id,
-          business_name,
-          slug,
-          rating
-        )
-      `)
+      .select('*')
       .eq('category_id', categoryId)
       .neq('id', productId)
       .eq('status', 'active')
@@ -168,7 +178,23 @@ export async function getRelatedProducts(
       return { products: [], error }
     }
 
-    return { products: data || [], error: null }
+    // Enrich with vendor data
+    const enrichedData = await Promise.all(
+      (data || []).map(async (product: any) => {
+        let vendor = null
+        if (product.vendor_id) {
+          const { data: vendorData } = await supabase
+            .from('vendors')
+            .select('id, business_name, slug, rating')
+            .eq('id', product.vendor_id)
+            .single()
+          vendor = vendorData
+        }
+        return { ...product, vendor }
+      })
+    )
+
+    return { products: enrichedData, error: null }
   } catch (error) {
     console.error('Error in getRelatedProducts:', error)
     return { products: [], error }
