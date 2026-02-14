@@ -70,8 +70,9 @@ export default function ProfilePage() {
         updated_at: new Date().toISOString(),
       }
       
-      const result = await supabase
-        .from('profiles')
+      // Type assertion needed due to Supabase TypeScript inference limitations
+      const profilesTable: ReturnType<typeof supabase.from> = supabase.from('profiles') as any
+      const result = await profilesTable
         .update(updateData)
         .eq('id', user.id)
 

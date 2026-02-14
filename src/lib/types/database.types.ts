@@ -8,58 +8,7 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export interface Database {
-  public: {
-    Tables: {
-      profiles: {
-        Row: Profile
-        Insert: Omit<Profile, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<Profile, 'id' | 'created_at'>>
-      }
-      vendors: {
-        Row: Vendor
-        Insert: Omit<Vendor, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<Vendor, 'id' | 'created_at'>>
-      }
-      products: {
-        Row: Product
-        Insert: Omit<Product, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<Product, 'id' | 'created_at'>>
-      }
-      properties: {
-        Row: Property
-        Insert: Omit<Property, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<Property, 'id' | 'created_at'>>
-      }
-      vehicles: {
-        Row: Vehicle
-        Insert: Omit<Vehicle, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<Vehicle, 'id' | 'created_at'>>
-      }
-      reviews: {
-        Row: Review
-        Insert: Omit<Review, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<Review, 'id' | 'created_at'>>
-      }
-      orders: {
-        Row: Order
-        Insert: Omit<Order, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<Order, 'id' | 'created_at'>>
-      }
-      favorites: {
-        Row: Favorite
-        Insert: Omit<Favorite, 'id' | 'created_at'>
-        Update: Partial<Omit<Favorite, 'id' | 'created_at'>>
-      }
-      messages: {
-        Row: Message
-        Insert: Omit<Message, 'id' | 'created_at'>
-        Update: Partial<Omit<Message, 'id'>>
-      }
-    }
-  }
-}
-
+// Define all entity types BEFORE the Database interface
 export type Profile = {
   id: string
   email: string
@@ -312,22 +261,6 @@ export type Order = {
   updated_at: string
 }
 
-// Extended types with relations
-export type ProductWithVendor = Product & {
-  vendor: Vendor | null
-  category: { id: string; name: string; slug: string } | null
-}
-
-export type PropertyWithVendor = Property & {
-  vendor: Vendor | null
-  category: { id: string; name: string; slug: string } | null
-}
-
-export type VehicleWithVendor = Vehicle & {
-  vendor: Vendor | null
-  category: { id: string; name: string; slug: string } | null
-}
-
 export type Favorite = {
   id: string
   user_id: string
@@ -343,6 +276,96 @@ export type Message = {
   content: string
   is_read: boolean
   created_at: string
+}
+
+// Database interface must come AFTER the type definitions it references
+export interface Database {
+  public: {
+    Tables: {
+      profiles: {
+        Row: Profile
+        Insert: Omit<Profile, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<Profile, 'id' | 'created_at'>>
+        Relationships: []
+      }
+      vendors: {
+        Row: Vendor
+        Insert: Omit<Vendor, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<Vendor, 'id' | 'created_at'>>
+        Relationships: []
+      }
+      products: {
+        Row: Product
+        Insert: Omit<Product, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<Product, 'id' | 'created_at'>>
+        Relationships: []
+      }
+      properties: {
+        Row: Property
+        Insert: Omit<Property, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<Property, 'id' | 'created_at'>>
+        Relationships: []
+      }
+      vehicles: {
+        Row: Vehicle
+        Insert: Omit<Vehicle, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<Vehicle, 'id' | 'created_at'>>
+        Relationships: []
+      }
+      reviews: {
+        Row: Review
+        Insert: Omit<Review, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<Review, 'id' | 'created_at'>>
+        Relationships: []
+      }
+      orders: {
+        Row: Order
+        Insert: Omit<Order, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<Order, 'id' | 'created_at'>>
+        Relationships: []
+      }
+      favorites: {
+        Row: Favorite
+        Insert: Omit<Favorite, 'id' | 'created_at'>
+        Update: Partial<Omit<Favorite, 'id' | 'created_at'>>
+        Relationships: []
+      }
+      messages: {
+        Row: Message
+        Insert: Omit<Message, 'id' | 'created_at'>
+        Update: Partial<Omit<Message, 'id'>>
+        Relationships: []
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+}
+
+// Extended types with relations
+export type ProductWithVendor = Product & {
+  vendor: Vendor | null
+  category: { id: string; name: string; slug: string } | null
+}
+
+export type PropertyWithVendor = Property & {
+  vendor: Vendor | null
+  category: { id: string; name: string; slug: string } | null
+}
+
+export type VehicleWithVendor = Vehicle & {
+  vendor: Vendor | null
+  category: { id: string; name: string; slug: string } | null
 }
 
 export type Conversation = {
