@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase/client'
@@ -30,7 +30,7 @@ const statusConfig: Record<string, { icon: any; color: string; bg: string; label
   refunded: { icon: RotateCcw, color: 'text-gray-600', bg: 'bg-gray-50', label: 'Refunded' },
 }
 
-export default function OrdersPage() {
+function OrdersContent() {
   const { user, loading: authLoading } = useAuth()
   const searchParams = useSearchParams()
   const successOrder = searchParams.get('success')
@@ -270,5 +270,20 @@ export default function OrdersPage() {
         )}
       </div>
     </div>
+  )
+}
+
+export default function OrdersPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600"></div>
+          <p className="mt-4 text-gray-600">Loading orders...</p>
+        </div>
+      </div>
+    }>
+      <OrdersContent />
+    </Suspense>
   )
 }
