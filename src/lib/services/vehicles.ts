@@ -10,9 +10,9 @@ export interface VehicleFilters {
   maxPrice?: number
   minYear?: number
   maxYear?: number
-  condition?: string
-  fuelType?: string
-  transmission?: string
+  condition?: 'new' | 'foreign_used' | 'nigerian_used' | 'accident_free'
+  fuelType?: 'petrol' | 'diesel' | 'electric' | 'hybrid' | 'cng'
+  transmission?: 'automatic' | 'manual'
   location?: string
   sort?: 'newest' | 'price-low' | 'price-high' | 'popular'
 }

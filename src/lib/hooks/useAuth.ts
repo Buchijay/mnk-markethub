@@ -54,7 +54,7 @@ export function useAuth() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('*, vendor:vendors(*)')
+        .select('*')
         .eq('id', userId)
         .single()
       
@@ -73,7 +73,18 @@ export function useAuth() {
         return
       }
       
-      setProfile(data as ProfileWithVendor | null)
+      // Fetch vendor data separately if user is a vendor
+      let vendorData = null
+      if (data && data.role === 'vendor') {
+        const { data: vendor } = await supabase
+          .from('vendors')
+          .select('*')
+          .eq('user_id', userId)
+          .single()
+        vendorData = vendor
+      }
+      
+      setProfile({ ...data, vendor: vendorData } as ProfileWithVendor | null)
     } catch (error) {
       console.error('Unexpected error fetching profile:', error)
       setProfile(null)
@@ -95,7 +106,7 @@ export function useAuth() {
           email_verified: false,
           metadata: {},
         } as any)
-        .select('*, vendor:vendors(*)')
+        .select('*')
         .single() as any)
       
       if (error) {
@@ -104,7 +115,7 @@ export function useAuth() {
         return
       }
       
-      setProfile(data as ProfileWithVendor | null)
+      setProfile({ ...data, vendor: null } as ProfileWithVendor | null)
     } catch (error) {
       console.error('Unexpected error creating profile:', error)
       setProfile(null)

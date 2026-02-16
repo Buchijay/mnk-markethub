@@ -7,7 +7,7 @@ import { productsService } from '@/lib/services/products'
 import { ShoppingBag, TrendingUp, Shield, Truck, Star, ArrowRight, Zap } from 'lucide-react'
 import ProductCard from '@/components/products/ProductCard'
 import toast from 'react-hot-toast'
-import type { Product } from '@/lib/types/products'
+import type { Product } from '@/lib/types/database.types'
 
 interface FeaturedProduct extends Omit<Product, 'vendor'> {
   vendor?: {

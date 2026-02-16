@@ -53,24 +53,10 @@ export default function ProductsPage() {
   }
 
   async function loadCategories() {
-    // Try to load categories - try multiple table names
-    let { data } = await supabase
-      .from('categories')
-      .select('*')
-      .order('name')
-    
-    // Fallback to product_categories if first query fails
-    if (!data) {
-      const { data: altData } = await supabase
-        .from('product_categories')
-        .select('*')
-        .order('name')
-      data = altData
-    }
-    
-    setCategories(data || [])
-    // Set first 6 as popular categories
-    setPopularCategories((data || []).slice(0, 6))
+    // Categories table doesn't exist yet - set empty arrays for now
+    // This can be implemented when the categories table is added to the database
+    setCategories([])
+    setPopularCategories([])
   }
 
   return (

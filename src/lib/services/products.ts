@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase/client'
-import { Product, ProductFilterOptions, ProductsResponse, ProductResponse } from '@/lib/types/products'
+import type { Product } from '@/lib/types/database.types'
+import { ProductFilterOptions, ProductsResponse, ProductResponse } from '@/lib/types/products'
 
 export interface ProductFilters {
   category?: string
@@ -86,12 +87,9 @@ export async function getProducts(
           }
 
           if (product.category_id) {
-            const { data: categoryData } = await supabase
-              .from('categories')
-              .select('id, name, slug')
-              .eq('id', product.category_id)
-              .single()
-            category = categoryData
+            // TODO: Implement when categories table is added to database
+            // For now, category will be null
+            category = null
           }
 
           return { ...product, vendor, category }
@@ -134,12 +132,9 @@ export async function getProductBySlug(slug: string): Promise<ProductResponse> {
     }
 
     if ((data as any)?.category_id) {
-      const { data: categoryData } = await supabase
-        .from('categories')
-        .select('id, name, slug')
-        .eq('id', (data as any).category_id)
-        .single()
-      enrichedData.category = categoryData
+      // TODO: Implement when categories table is added to database
+      // For now, category will be null
+      enrichedData.category = null
     }
 
     return { product: enrichedData, error: null }
