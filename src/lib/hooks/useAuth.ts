@@ -76,12 +76,21 @@ export function useAuth() {
       // Fetch vendor data separately if user is a vendor
       let vendorData = null
       if (data && data.role === 'vendor') {
-        const { data: vendor } = await supabase
-          .from('vendors')
-          .select('*')
-          .eq('user_id', userId)
-          .single()
-        vendorData = vendor
+        try {
+          const { data: vendor, error: vendorError } = await supabase
+            .from('vendors')
+            .select('*')
+            .eq('user_id', userId)
+            .single()
+          
+          if (vendorError) {
+            console.error('Error fetching vendor data:', vendorError)
+          } else {
+            vendorData = vendor
+          }
+        } catch (error) {
+          console.error('Unexpected error fetching vendor data:', error)
+        }
       }
       
       setProfile({ ...data, vendor: vendorData } as ProfileWithVendor | null)

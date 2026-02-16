@@ -3,8 +3,10 @@ import type { Message, Conversation } from '@/lib/types/database.types'
 
 // Note: Conversations table is not yet implemented in the database
 // These functions are stubs that will be implemented when the table is added
+// WARNING: Some messaging features will be limited until fully implemented
 export async function getConversations(userId: string): Promise<Conversation[]> {
   // TODO: Implement when conversations table is added to database
+  console.warn('getConversations: Conversations table not implemented - returning empty array')
   return []
 }
 
@@ -69,9 +71,12 @@ export async function getUnreadCount(userId: string) {
 
 export async function createOrGetConversation(userId: string, vendorId: string): Promise<Conversation> {
   // TODO: Implement when conversations table is added to database
-  // For now, return a mock conversation
+  // WARNING: This is a stub implementation that returns a mock object.
+  // Messages functionality will be limited until the conversations table is created.
+  console.warn('createOrGetConversation: Conversations table not implemented - returning mock data')
+  
   return {
-    id: `${userId}-${vendorId}`,
+    id: `mock-${userId}-${vendorId}`,
     user_id: userId,
     vendor_id: vendorId,
     last_message: null,
