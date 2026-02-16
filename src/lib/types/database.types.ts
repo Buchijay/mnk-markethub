@@ -286,14 +286,7 @@ export interface Database {
         Row: Profile
         Insert: Omit<Profile, 'id' | 'created_at' | 'updated_at'>
         Update: Partial<Omit<Profile, 'id' | 'created_at'>>
-        Relationships: [
-          {
-            foreignKeyName: "vendors_user_id_fkey"
-            columns: ["id"]
-            referencedRelation: "vendors"
-            referencedColumns: ["user_id"]
-          }
-        ]
+        Relationships: []
       }
       vendors: {
         Row: Vendor

@@ -2,8 +2,9 @@ import { supabase } from '@/lib/supabase/client'
 import type { Message, Conversation } from '@/lib/types/database.types'
 
 export async function getConversations(userId: string) {
-  // Conversations table doesn't exist in current schema
-  // Return empty array for now
+  // TODO: Conversations table doesn't exist in current schema
+  // This returns empty array as a temporary placeholder
+  console.warn('getConversations: conversations table not implemented')
   return [] as Conversation[]
 }
 
@@ -67,8 +68,9 @@ export async function getUnreadCount(userId: string) {
 }
 
 export async function createOrGetConversation(userId: string, vendorId: string) {
-  // Conversations table doesn't exist in current schema
-  // Return a mock conversation for now
+  // TODO: Conversations table doesn't exist in current schema
+  // This returns mock data as a temporary placeholder until the table is created
+  console.warn('createOrGetConversation: conversations table not implemented, returning mock data')
   return {
     id: `${userId}-${vendorId}`,
     user_id: userId,
