@@ -139,5 +139,50 @@ export const vehiclesService = {
   getVehicleBySlug,
   getVehiclesByFilters,
   getRelatedVehicles,
+
+  // Alias used by automotive page
+  async getAll(filters: Record<string, any> = {}) {
+    const mapped: VehicleFilters = {
+      make: filters.make || undefined,
+      model: filters.model || undefined,
+      minPrice: filters.minPrice ? Number(filters.minPrice) : undefined,
+      maxPrice: filters.maxPrice ? Number(filters.maxPrice) : undefined,
+      minYear: filters.year_min ? Number(filters.year_min) : undefined,
+      maxYear: filters.year_max ? Number(filters.year_max) : undefined,
+      condition: filters.condition || undefined,
+      fuelType: filters.fuel_type || undefined,
+      transmission: filters.transmission || undefined,
+      sort: filters.sort || 'newest',
+    }
+    const { vehicles, count, error } = await getVehiclesByFilters(mapped)
+    return { data: vehicles, count, error }
+  },
+
+  // Get popular makes by counting vehicles per make
+  async getPopularMakes() {
+    try {
+      const { data, error } = await supabase
+        .from('vehicles')
+        .select('make')
+        .eq('status', 'active')
+
+      if (error) throw error
+
+      const makeCounts: Record<string, number> = {}
+      ;(data || []).forEach((v: any) => {
+        if (v.make) {
+          makeCounts[v.make] = (makeCounts[v.make] || 0) + 1
+        }
+      })
+
+      return Object.entries(makeCounts)
+        .map(([make, count]) => ({ make, count }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10)
+    } catch (error) {
+      console.error('Error fetching popular makes:', error)
+      return []
+    }
+  },
 }
 

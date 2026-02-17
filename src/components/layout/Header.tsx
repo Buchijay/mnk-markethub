@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { ShoppingCart, User, Search, Menu, X, Store, LogOut, LogIn, Heart, MessageSquare } from 'lucide-react'
 import { useAuth } from '@/lib/hooks/useAuth'
@@ -12,10 +12,12 @@ interface CartItem {
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [cartCount, setCartCount] = useState(0)
   const [mounted, setMounted] = useState(false)
   const { user, profile, signOut, loading: authLoading } = useAuth()
+  const userMenuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setMounted(true)
@@ -28,7 +30,19 @@ export default function Header() {
 
     updateCartCount()
     window.addEventListener('cartUpdated', updateCartCount)
-    return () => window.removeEventListener('cartUpdated', updateCartCount)
+
+    // Close user menu when clicking outside
+    const handleClickOutside = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+
+    return () => {
+      window.removeEventListener('cartUpdated', updateCartCount)
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
   }, [])
 
   const handleSearch = (e: React.FormEvent) => {
@@ -58,8 +72,8 @@ export default function Header() {
         <div className="flex items-center justify-between gap-4">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-600 to-amber-500 flex items-center justify-center text-white font-bold shadow-lg">
-              M
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-600 to-amber-500 flex items-center justify-center text-white shadow-lg">
+              <Store size={22} />
             </div>
             <span className="hidden sm:inline text-xl font-bold text-white">
               MK Solution
@@ -99,14 +113,18 @@ export default function Header() {
             </Link>
 
             {/* User Menu */}
-            <div className="relative group">
-              <button className="flex items-center gap-2 p-2 hover:bg-gray-800 rounded-lg transition text-gray-200 group-hover:text-amber-500">
+            <div className="relative" ref={userMenuRef}>
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className={`flex items-center gap-2 p-2 hover:bg-gray-800 rounded-lg transition text-gray-200 ${userMenuOpen ? 'text-amber-500' : 'hover:text-amber-500'}`}
+              >
                 <User size={24} />
                 <span className="hidden lg:inline text-sm font-medium">
                   {user ? (profile?.full_name?.split(' ')[0] || 'Account') : 'Account'}
                 </span>
               </button>
-              <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-xl py-2 hidden group-hover:block z-50">
+              {userMenuOpen && (
+              <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-xl py-2 z-50">
                 {user ? (
                   <>
                     <div className="px-4 py-2 border-b mb-1">
@@ -136,7 +154,7 @@ export default function Header() {
                     )}
                     <hr className="my-2" />
                     <button
-                      onClick={signOut}
+                      onClick={() => { signOut(); setUserMenuOpen(false); }}
                       className="block w-full text-left px-4 py-2 hover:bg-gray-50 text-red-600 font-medium"
                     >
                       Sign Out
@@ -144,15 +162,16 @@ export default function Header() {
                   </>
                 ) : (
                   <>
-                    <Link href="/auth/login" className="block px-4 py-2 hover:bg-gray-50 text-gray-900 font-medium">
+                    <Link href="/auth/login" onClick={() => setUserMenuOpen(false)} className="block px-4 py-2 hover:bg-gray-50 text-gray-900 font-medium">
                       Sign In
                     </Link>
-                    <Link href="/auth/register" className="block px-4 py-2 hover:bg-gray-50 text-amber-600 font-medium">
+                    <Link href="/auth/register" onClick={() => setUserMenuOpen(false)} className="block px-4 py-2 hover:bg-gray-50 text-amber-600 font-medium">
                       Create Account
                     </Link>
                   </>
                 )}
               </div>
+              )}
             </div>
 
             {/* Mobile Menu Toggle */}
