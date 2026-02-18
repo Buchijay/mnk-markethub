@@ -86,12 +86,9 @@ export async function getProducts(
           }
 
           if (product.category_id) {
-            const { data: categoryData } = await supabase
-              .from('categories')
-              .select('id, name, slug')
-              .eq('id', product.category_id)
-              .single()
-            category = categoryData
+            // Categories table doesn't exist in current schema
+            // Skip category enrichment for now
+            category = null
           }
 
           return { ...product, vendor, category }
@@ -100,7 +97,7 @@ export async function getProducts(
       return { products: enrichedData, error: null, count: count || 0 }
     }
 
-    return { products: data || [], error: null, count: count || 0 }
+    return { products: (data || []) as Product[], error: null, count: count || 0 }
   } catch (error) {
     console.error('Error in getProducts:', error)
     return { products: [], error, count: 0 }
@@ -134,12 +131,9 @@ export async function getProductBySlug(slug: string): Promise<ProductResponse> {
     }
 
     if ((data as any)?.category_id) {
-      const { data: categoryData } = await supabase
-        .from('categories')
-        .select('id, name, slug')
-        .eq('id', (data as any).category_id)
-        .single()
-      enrichedData.category = categoryData
+      // Categories table doesn't exist in current schema
+      // Skip category enrichment for now
+      enrichedData.category = null
     }
 
     return { product: enrichedData, error: null }

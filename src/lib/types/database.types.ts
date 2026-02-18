@@ -292,7 +292,14 @@ export interface Database {
         Row: Vendor
         Insert: Omit<Vendor, 'id' | 'created_at' | 'updated_at'>
         Update: Partial<Omit<Vendor, 'id' | 'created_at'>>
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "vendors_user_id_fkey"
+            columns: ["user_id"]
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          }
+        ]
       }
       products: {
         Row: Product

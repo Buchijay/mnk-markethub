@@ -37,7 +37,7 @@ export default function OrdersPage() {
 
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
-  const [filter, setFilter] = useState<string>('all')
+  const [filter, setFilter] = useState<'all' | 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled' | 'refunded'>('all')
 
   useEffect(() => {
     if (user) loadOrders()
@@ -54,7 +54,7 @@ export default function OrdersPage() {
         .order('created_at', { ascending: false })
 
       if (filter !== 'all') {
-        query = query.eq('status', filter)
+        query = query.eq('status', filter as Order['status'])
       }
 
       const { data, error } = await query
@@ -127,14 +127,14 @@ export default function OrdersPage() {
 
           {/* Filters */}
           <div className="flex flex-wrap gap-2">
-            {[
-              { key: 'all', label: 'All Orders' },
-              { key: 'pending', label: 'Pending' },
-              { key: 'confirmed', label: 'Confirmed' },
-              { key: 'shipped', label: 'Shipped' },
-              { key: 'delivered', label: 'Delivered' },
-              { key: 'cancelled', label: 'Cancelled' },
-            ].map((f) => (
+            {([
+              { key: 'all' as const, label: 'All Orders' },
+              { key: 'pending' as const, label: 'Pending' },
+              { key: 'confirmed' as const, label: 'Confirmed' },
+              { key: 'shipped' as const, label: 'Shipped' },
+              { key: 'delivered' as const, label: 'Delivered' },
+              { key: 'cancelled' as const, label: 'Cancelled' },
+            ] as const).map((f) => (
               <button
                 key={f.key}
                 onClick={() => setFilter(f.key)}
