@@ -1,3 +1,5 @@
+import type { Product, ProductWithVendor } from '@/lib/types/database.types'
+
 // Product Category Type
 export interface ProductCategory {
   id: string
@@ -41,43 +43,6 @@ export interface Vendor {
   updated_at: string
 }
 
-// Product Type
-export interface Product {
-  id: string
-  vendor_id: string
-  category_id?: string
-  name: string
-  slug: string
-  description?: string
-  short_description?: string
-  price: number
-  compare_at_price?: number
-  cost_price?: number
-  sku?: string
-  barcode?: string
-  stock_quantity: number
-  low_stock_threshold: number
-  track_inventory: boolean
-  images: string[]
-  video_url?: string
-  specifications: Record<string, any>
-  features: string[]
-  tags: string[]
-  meta_title?: string
-  meta_description?: string
-  meta_keywords?: string[]
-  status: 'draft' | 'active' | 'out_of_stock' | 'archived'
-  is_featured: boolean
-  views_count: number
-  favorites_count: number
-  sales_count: number
-  created_at: string
-  updated_at: string
-  published_at?: string
-  vendor?: Vendor
-  category?: ProductCategory
-}
-
 // Product Variant Type
 export interface ProductVariant {
   id: string
@@ -100,7 +65,7 @@ export interface ProductsResponse {
 }
 
 export interface ProductResponse {
-  product: Product | null
+  product: ProductWithVendor | null
   error: any
 }
 

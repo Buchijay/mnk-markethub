@@ -1,15 +1,13 @@
 import { supabase } from '@/lib/supabase/client'
 import type { Message, Conversation } from '@/lib/types/database.types'
 
-export async function getConversations(userId: string) {
-  const { data, error } = await supabase
-    .from('conversations')
-    .select('*')
-    .or(`user_id.eq.${userId},vendor_id.eq.${userId}`)
-    .order('last_message_at', { ascending: false, nullsFirst: false })
-
-  if (error) throw error
-  return (data || []) as Conversation[]
+// Note: Conversations table is not yet implemented in the database
+// These functions are stubs that will be implemented when the table is added
+// WARNING: Some messaging features will be limited until fully implemented
+export async function getConversations(userId: string): Promise<Conversation[]> {
+  // TODO: Implement when conversations table is added to database
+  console.warn('getConversations: Conversations table not implemented - returning empty array')
+  return []
 }
 
 export async function getMessagesByConversation(conversationId: string, limit = 50) {
@@ -71,29 +69,20 @@ export async function getUnreadCount(userId: string) {
   return count || 0
 }
 
-export async function createOrGetConversation(userId: string, vendorId: string) {
-  // Try to find existing conversation
-  const { data: existing } = await supabase
-    .from('conversations')
-    .select('*')
-    .or(`and(user_id.eq.${userId},vendor_id.eq.${vendorId}),and(user_id.eq.${vendorId},vendor_id.eq.${userId})`)
-    .single()
-
-  if (existing) {
-    return existing as Conversation
+export async function createOrGetConversation(userId: string, vendorId: string): Promise<Conversation> {
+  // TODO: Implement when conversations table is added to database
+  // WARNING: This is a stub implementation that returns a mock object.
+  // Messages functionality will be limited until the conversations table is created.
+  console.warn('createOrGetConversation: Conversations table not implemented - returning mock data')
+  
+  return {
+    id: `mock-${userId}-${vendorId}`,
+    user_id: userId,
+    vendor_id: vendorId,
+    last_message: null,
+    last_message_at: null,
+    unread_count: 0,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
   }
-
-  // Create new conversation
-  const { data, error } = await supabase
-    .from('conversations')
-    .insert({
-      user_id: userId,
-      vendor_id: vendorId,
-      unread_count: 0,
-    } as any)
-    .select('*')
-    .single()
-
-  if (error) throw error
-  return data as Conversation
 }
