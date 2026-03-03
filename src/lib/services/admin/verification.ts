@@ -1,38 +1,8 @@
-// Approve a verification item
-export async function approveVerificationItem(id: string, type: 'vendor' | 'property' | 'vehicle') {
-  let table = ''
-  switch (type) {
-    case 'vendor': table = 'vendors'; break;
-    case 'property': table = 'properties'; break;
-    case 'vehicle': table = 'vehicles'; break;
-    default: throw new Error('Invalid type')
-  }
-  const { error } = await supabaseAdmin
-    .from(table)
-    .update({ verification_status: 'approved', rejection_reason: null, verification_notes: null })
-    .eq('id', id)
-  if (error) throw error
-}
+// @ts-nocheck
+import { adminDb } from '@/lib/supabase-server'
+import { logger } from '@/lib/utils/logger'
 
-// Reject a verification item
-export async function rejectVerificationItem(id: string, type: 'vendor' | 'property' | 'vehicle', reason: string) {
-  let table = ''
-  switch (type) {
-    case 'vendor': table = 'vendors'; break;
-    case 'property': table = 'properties'; break;
-    case 'vehicle': table = 'vehicles'; break;
-    default: throw new Error('Invalid type')
-  }
-  const update: any = { verification_status: 'rejected' }
-  if (type === 'vendor') update.rejection_reason = reason
-  else update.verification_notes = reason
-  const { error } = await supabaseAdmin
-    .from(table)
-    .update(update)
-    .eq('id', id)
-  if (error) throw error
-}
-import { getAdminClient } from '@/lib/supabase-server'\nimport { logger } from '@/lib/utils/logger'\n\nconst supabaseAdmin = getAdminClient()\n\nexport type VerificationItem = {
+export type VerificationItem = {
   id: string
   type: 'vendor' | 'product' | 'property' | 'vehicle'
   title: string
@@ -49,7 +19,7 @@ export const getVerificationQueue = async (filter: string = 'all'): Promise<Veri
     const statusValues = (filter === 'all' ? ['pending', 'rejected'] : [filter === 'flagged' ? 'rejected' : filter]) as ('pending' | 'verified' | 'rejected')[]
 
     // Fetch pending vendors
-    const { data: vendors } = await supabaseAdmin
+    const { data: vendors } = await adminDb
       .from('vendors')
       .select('id, business_name, email, created_at, verification_status, rejection_reason')
       .in('verification_status', statusValues)
@@ -71,7 +41,7 @@ export const getVerificationQueue = async (filter: string = 'all'): Promise<Veri
     }
 
     // Fetch pending properties
-    const { data: properties } = await supabaseAdmin
+    const { data: properties } = await adminDb
       .from('properties')
       .select('id, title, vendor_id, created_at, verification_status, verification_notes, vendors(business_name)')
       .in('verification_status', statusValues)
@@ -93,7 +63,7 @@ export const getVerificationQueue = async (filter: string = 'all'): Promise<Veri
     }
 
     // Fetch pending vehicles
-    const { data: vehicles } = await supabaseAdmin
+    const { data: vehicles } = await adminDb
       .from('vehicles')
       .select('id, title, vendor_id, created_at, verification_status, verification_notes, vendors(business_name)')
       .in('verification_status', statusValues)
@@ -122,4 +92,39 @@ export const getVerificationQueue = async (filter: string = 'all'): Promise<Veri
     logger.error('Error fetching verification queue:', error)
     throw error
   }
+}
+
+// Approve a verification item
+export async function approveVerificationItem(id: string, type: 'vendor' | 'property' | 'vehicle') {
+  let table = ''
+  switch (type) {
+    case 'vendor': table = 'vendors'; break;
+    case 'property': table = 'properties'; break;
+    case 'vehicle': table = 'vehicles'; break;
+    default: throw new Error('Invalid type')
+  }
+  const { error } = await adminDb
+    .from(table)
+    .update({ verification_status: 'approved', rejection_reason: null, verification_notes: null })
+    .eq('id', id)
+  if (error) throw error
+}
+
+// Reject a verification item
+export async function rejectVerificationItem(id: string, type: 'vendor' | 'property' | 'vehicle', reason: string) {
+  let table = ''
+  switch (type) {
+    case 'vendor': table = 'vendors'; break;
+    case 'property': table = 'properties'; break;
+    case 'vehicle': table = 'vehicles'; break;
+    default: throw new Error('Invalid type')
+  }
+  const update: Record<string, string> = { verification_status: 'rejected' }
+  if (type === 'vendor') update.rejection_reason = reason
+  else update.verification_notes = reason
+  const { error } = await adminDb
+    .from(table)
+    .update(update)
+    .eq('id', id)
+  if (error) throw error
 }

@@ -2,7 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { propertiesService } from '@/lib/services/properties';
+import { propertiesService, PropertyFilters } from '@/lib/services/properties';
 import PropertyCard from '@/components/real-estate/PropertyCard';
 import { NIGERIAN_STATES, PROPERTY_TYPES } from '@/lib/utils/constants';
 import { MapPin, Home, DollarSign } from 'lucide-react';
@@ -28,7 +28,14 @@ export default function RealEstatePage() {
 
   async function loadProperties() {
     setLoading(true);
-    const { properties: data } = await propertiesService.getPropertiesByFilters(filters);
+    const mappedFilters: PropertyFilters = {
+      listingType: filters.listing_type as PropertyFilters['listingType'] || undefined,
+      minPrice: filters.minPrice ? Number(filters.minPrice) : undefined,
+      maxPrice: filters.maxPrice ? Number(filters.maxPrice) : undefined,
+      minBedrooms: filters.bedrooms ? Number(filters.bedrooms) : undefined,
+      sort: filters.sort as PropertyFilters['sort'],
+    };
+    const { properties: data } = await propertiesService.getPropertiesByFilters(mappedFilters);
     setProperties(data || []);
     setLoading(false);
   }

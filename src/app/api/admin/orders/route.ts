@@ -1,13 +1,13 @@
 // src/app/api/admin/orders/route.js
 // GET /api/admin/orders - Returns paginated orders with filters
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { validateAdminRequest, errorResponse, successResponse } from '@/lib/utils/admin-auth';
 import { orderQuerySchema, validateQuery } from '@/lib/validations/admin';
 import { adminDb } from '@/lib/supabase-server';
 import { logger } from '@/lib/utils/logger'
 
-export async function GET(request) {
+export async function GET(request: NextRequest) {
   // Validate admin authentication
   const { error: authError } = await validateAdminRequest(request);
   if (authError) return authError;
@@ -103,7 +103,9 @@ export async function GET(request) {
     // Apply pagination
     query = query.range(offset, offset + limit - 1);
 
-    const { data: orders, error, count } = await query;
+    const { data: ordersData, error, count } = await query;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const orders = ordersData as any[];
 
     if (error) {
       logger.error('Error fetching orders:', error);
@@ -114,7 +116,7 @@ export async function GET(request) {
     let filteredOrders = orders;
     if (vendorId) {
       filteredOrders = orders?.filter(order => 
-        order.items?.some(item => item.vendor?.id === vendorId)
+        order.items?.some((item: any) => item.vendor?.id === vendorId)
       );
     }
 
@@ -126,8 +128,9 @@ export async function GET(request) {
     const { data: statusCounts } = await adminDb.from('orders')
       .select('status');
 
-    const statuses = {};
-    statusCounts?.forEach(o => {
+    const statuses: Record<string, number> = {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (statusCounts as any[])?.forEach((o: any) => {
       if (o.status) {
         statuses[o.status] = (statuses[o.status] || 0) + 1;
       }

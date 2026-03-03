@@ -11,12 +11,12 @@ import { logger } from '@/lib/utils/logger';
  * GET /api/admin/orders/[id]
  * Returns order with items and vendor details
  */
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error: authError } = await validateAdminRequest(request);
   if (authError) return authError;
 
   try {
-    const { id } = params;
+    const { id } = await params;
     // Validate ID
     const idValidation = idParamSchema.safeParse({ id });
     if (!idValidation.success) {
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     }
 
     // Fetch order with all related data
-    const { data: order, error: orderError } = await adminDb.from('orders')
+    const { data: orderData, error: orderError } = await adminDb.from('orders')
       .select(`
         *,
         user:user_id (
@@ -56,6 +56,8 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       `)
       .eq('id', id)
       .single();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const order = orderData as any;
 
     if (orderError) {
       if (orderError.code === 'PGRST116') {
@@ -100,12 +102,12 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
  * PATCH /api/admin/orders/[id]
  * Update order status, add tracking number
  */
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error: authError, profile } = await validateAdminRequest(request);
   if (authError) return authError;
 
   try {
-    const { id } = params;
+    const { id } = await params;
     // Validate ID
     const idValidation = idParamSchema.safeParse({ id });
     if (!idValidation.success) {

@@ -1,12 +1,12 @@
 // src/app/api/admin/stats/route.js
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { verifyAdmin } from '@/lib/supabase-server';
 import { adminStats } from '@/lib/services/admin.service';
 import { logger } from '@/lib/utils/logger'
 
 // GET /api/admin/stats - Get dashboard statistics
-export async function GET(request) {
+export async function GET(request: NextRequest) {
   try {
     const supabase = await createSupabaseServerClient();
     const { data: { user }, error: authError } = await supabase.auth.getUser();

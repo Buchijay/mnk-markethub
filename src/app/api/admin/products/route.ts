@@ -1,13 +1,13 @@
 // src/app/api/admin/products/route.js
 // GET /api/admin/products - Returns paginated products with vendor info
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { validateAdminRequest, errorResponse, successResponse } from '@/lib/utils/admin-auth';
 import { productQuerySchema, validateQuery } from '@/lib/validations/admin';
 import { adminDb } from '@/lib/supabase-server';
 import { logger } from '@/lib/utils/logger'
 
-export async function GET(request) {
+export async function GET(request: NextRequest) {
   // Validate admin authentication
   const { error: authError } = await validateAdminRequest(request);
   if (authError) return authError;
@@ -98,8 +98,9 @@ export async function GET(request) {
       .select('category')
       .not('category', 'is', null);
 
-    const categories = {};
-    categoryCounts?.forEach(p => {
+    const categories: Record<string, number> = {};
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (categoryCounts as any[])?.forEach((p: any) => {
       if (p.category) {
         categories[p.category] = (categories[p.category] || 0) + 1;
       }

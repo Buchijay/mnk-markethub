@@ -11,12 +11,12 @@ import { logger } from '@/lib/utils/logger';
  * GET /api/admin/products/[id]
  * Returns product with vendor details
  */
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error: authError } = await validateAdminRequest(request);
   if (authError) return authError;
 
   try {
-    const { id } = params;
+    const { id } = await params;
     // Validate ID
     const idValidation = idParamSchema.safeParse({ id });
     if (!idValidation.success) {
@@ -74,7 +74,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       stats,
     });
   } catch (error) {
-    logger.error({ err: error }, 'Product GET error');
+    logger.error('Product GET error', { err: error });
     return errorResponse('Failed to fetch product details', 500);
   }
 }
@@ -83,12 +83,12 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
  * PATCH /api/admin/products/[id]
  * Update product (status, approval, featured)
  */
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error: authError } = await validateAdminRequest(request);
   if (authError) return authError;
 
   try {
-    const { id } = params;
+    const { id } = await params;
     // Validate ID
     const idValidation = idParamSchema.safeParse({ id });
     if (!idValidation.success) {
@@ -103,10 +103,12 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     }
 
     // Check if product exists
-    const { data: existingProduct, error: fetchError } = await adminDb.from('products')
+    const { data: existingProductData, error: fetchError } = await adminDb.from('products')
       .select('id, status')
       .eq('id', id)
       .single();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const existingProduct = existingProductData as any;
 
     if (fetchError || !existingProduct) {
       return errorResponse('Product not found', 404);
@@ -151,7 +153,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       product,
     });
   } catch (error) {
-    logger.error({ err: error }, 'Product PATCH error');
+    logger.error('Product PATCH error', { err: error });
     return errorResponse('Failed to update product', 500);
   }
 }
@@ -160,12 +162,12 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
  * DELETE /api/admin/products/[id]
  * Soft delete product
  */
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error: authError } = await validateAdminRequest(request);
   if (authError) return authError;
 
   try {
-    const { id } = params;
+    const { id } = await params;
     // Validate ID
     const idValidation = idParamSchema.safeParse({ id });
     if (!idValidation.success) {
@@ -184,7 +186,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
 
     // Soft delete: set deleted_at
     const { data: product, error: updateError } = await adminDb.from('products')
-      .update({ deleted_at: new Date().toISOString() })
+      .update({ deleted_at: new Date().toISOString() } as any)
       .eq('id', id)
       .select('id, deleted_at')
       .single();
@@ -198,7 +200,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       product,
     });
   } catch (error) {
-    logger.error({ err: error }, 'Product DELETE error');
+    logger.error('Product DELETE error', { err: error });
     return errorResponse('Failed to delete product', 500);
   }
 }
