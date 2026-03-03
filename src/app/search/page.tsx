@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { supabase } from '@/lib/supabase/client'
 import { Search, Package, Home, Car, Box } from 'lucide-react'
 import type { Product, Property, Vehicle } from '@/lib/types/database.types'
+import { logger } from '@/lib/utils/logger'
 
 interface SearchResult {
   type: 'product' | 'property' | 'vehicle'
@@ -118,7 +119,7 @@ export default function SearchPage() {
 
       setResults(allResults)
     } catch (error) {
-      console.error('Error searching:', error)
+      logger.error('Error searching:', error)
     } finally {
       setLoading(false)
     }
@@ -207,7 +208,7 @@ export default function SearchPage() {
               ].map(({ key, label, icon: Icon }) => (
                 <button
                   key={key}
-                  onClick={() => setFilter(key as any)}
+                  onClick={() => setFilter(key as typeof filter)}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
                     filter === key
                       ? 'bg-blue-600 text-white'

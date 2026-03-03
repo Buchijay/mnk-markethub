@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabase/client'
 import { Search, Package, Tag, TrendingUp, Grid, List } from 'lucide-react'
 import type { ProductWithVendor } from '@/lib/types/database.types'
 import type { ProductFilters } from '@/lib/services/products'
+import { logger } from '@/lib/utils/logger'
 
 interface Category {
   id: string
@@ -21,6 +22,9 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true)
   const [view, setView] = useState<'grid' | 'list'>('grid')
   const [popularCategories, setPopularCategories] = useState<Category[]>([])
+  const [page, setPage] = useState(1)
+  const [totalCount, setTotalCount] = useState(0)
+  const ITEMS_PER_PAGE = 12
   
   const [filters, setFilters] = useState<ProductFilters>({
     category: '',
@@ -30,9 +34,14 @@ export default function ProductsPage() {
     sort: 'newest'
   })
 
+  const updateFilters = (newFilters: Partial<ProductFilters>) => {
+    setFilters(prev => ({ ...prev, ...newFilters }))
+    setPage(1)
+  }
+
   useEffect(() => {
     loadProducts()
-  }, [filters])
+  }, [filters, page])
 
   useEffect(() => {
     loadCategories()
@@ -41,11 +50,15 @@ export default function ProductsPage() {
   async function loadProducts() {
     setLoading(true)
     try {
-      const result = await productsService.getAll(filters)
-      console.log('Products loaded:', result)
-      setProducts((result.products || []) as any)
+      const result = await productsService.getAll({
+        ...filters,
+        limit: ITEMS_PER_PAGE,
+        offset: (page - 1) * ITEMS_PER_PAGE,
+      })
+      setProducts((result.products || []) as unknown as typeof products)
+      setTotalCount(result.count || 0)
     } catch (error) {
-      console.error('Error loading products:', error)
+      logger.error('Error loading products:', error)
       setProducts([])
     } finally {
       setLoading(false)
@@ -53,20 +66,10 @@ export default function ProductsPage() {
   }
 
   async function loadCategories() {
-    // Try to load categories - try multiple table names
-    let { data } = await supabase
+    const { data } = await supabase
       .from('categories')
       .select('*')
       .order('name')
-    
-    // Fallback to product_categories if first query fails
-    if (!data) {
-      const { data: altData } = await supabase
-        .from('product_categories')
-        .select('*')
-        .order('name')
-      data = altData
-    }
     
     setCategories(data || [])
     // Set first 6 as popular categories
@@ -89,14 +92,14 @@ export default function ProductsPage() {
                   type="text"
                   placeholder="Search products..."
                   value={filters.search || ''}
-                  onChange={(e) => setFilters({ ...filters, search: e.target.value })}
+                  onChange={(e) => updateFilters({ search: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-600 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:border-yellow-500"
                 />
               </div>
 
               <select
                 value={filters.category || ''}
-                onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+                onChange={(e) => updateFilters({ category: e.target.value })}
                 className="px-4 py-3 border border-gray-600 rounded-lg bg-gray-800 text-white focus:outline-none focus:border-yellow-500"
               >
                 <option value="">All Categories</option>
@@ -126,7 +129,7 @@ export default function ProductsPage() {
               {popularCategories.map(cat => (
                 <button
                   key={cat.id}
-                  onClick={() => setFilters({ ...filters, category: cat.id })}
+                  onClick={() => updateFilters({ category: cat.id })}
                   className={`px-6 py-3 rounded-lg border-2 font-semibold transition ${
                     filters.category === cat.id
                       ? 'bg-yellow-500 text-black border-yellow-500'
@@ -149,7 +152,7 @@ export default function ProductsPage() {
               <Package className="text-yellow-600" size={32} />
             </div>
             <div>
-              <p className="text-3xl font-bold text-gray-900">{products.length}</p>
+              <p className="text-3xl font-bold text-gray-900">{totalCount}</p>
               <p className="text-gray-700 font-medium">Products Available</p>
             </div>
           </div>
@@ -184,7 +187,7 @@ export default function ProductsPage() {
                 <label className="block text-sm font-semibold mb-2 text-gray-800">Category</label>
                 <select
                   value={filters.category || ''}
-                  onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+                  onChange={(e) => updateFilters({ category: e.target.value })}
                   className="w-full px-3 py-2 border rounded-lg text-gray-900 focus:outline-none focus:border-yellow-500"
                 >
                   <option value="">All Categories</option>
@@ -202,8 +205,7 @@ export default function ProductsPage() {
                     type="number"
                     placeholder="Min Price"
                     value={filters.minPrice || ''}
-                    onChange={(e) => setFilters({ 
-                      ...filters, 
+                    onChange={(e) => updateFilters({ 
                       minPrice: e.target.value ? Number(e.target.value) : undefined 
                     })}
                     className="w-full px-3 py-2 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-yellow-500"
@@ -212,8 +214,7 @@ export default function ProductsPage() {
                     type="number"
                     placeholder="Max Price"
                     value={filters.maxPrice || ''}
-                    onChange={(e) => setFilters({ 
-                      ...filters, 
+                    onChange={(e) => updateFilters({ 
                       maxPrice: e.target.value ? Number(e.target.value) : undefined 
                     })}
                     className="w-full px-3 py-2 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-yellow-500"
@@ -226,8 +227,7 @@ export default function ProductsPage() {
                 <label className="block text-sm font-semibold mb-2 text-gray-800">Sort By</label>
                 <select
                   value={filters.sort || 'newest'}
-                  onChange={(e) => setFilters({ 
-                    ...filters, 
+                  onChange={(e) => updateFilters({ 
                     sort: e.target.value as ProductFilters['sort']
                   })}
                   className="w-full px-3 py-2 border rounded-lg text-gray-900 focus:outline-none focus:border-yellow-500"
@@ -240,13 +240,16 @@ export default function ProductsPage() {
               </div>
 
               <button
-                onClick={() => setFilters({
-                  category: '',
-                  minPrice: undefined,
-                  maxPrice: undefined,
-                  search: '',
-                  sort: 'newest'
-                })}
+                onClick={() => {
+                  setFilters({
+                    category: '',
+                    minPrice: undefined,
+                    maxPrice: undefined,
+                    search: '',
+                    sort: 'newest'
+                  })
+                  setPage(1)
+                }}
                 className="w-full bg-gray-200 text-gray-700 py-2 rounded-lg hover:bg-gray-300 transition"
               >
                 Clear All Filters
@@ -259,7 +262,7 @@ export default function ProductsPage() {
             {/* Toolbar */}
             <div className="bg-white rounded-lg shadow-md p-4 mb-6 flex items-center justify-between">
               <p className="text-gray-800">
-                <span className="font-bold text-gray-900">{products.length}</span> products found
+                <span className="font-bold text-gray-900">{totalCount}</span> products found
               </p>
               <div className="flex items-center gap-2">
                 <button
@@ -299,13 +302,16 @@ export default function ProductsPage() {
                 <h3 className="text-xl font-semibold text-gray-700 mb-2">No products found</h3>
                 <p className="text-gray-600 mb-6">Try adjusting your filters or search terms</p>
                 <button
-                  onClick={() => setFilters({
-                    category: '',
-                    minPrice: undefined,
-                    maxPrice: undefined,
-                    search: '',
-                    sort: 'newest'
-                  })}
+                  onClick={() => {
+                    setFilters({
+                      category: '',
+                      minPrice: undefined,
+                      maxPrice: undefined,
+                      search: '',
+                      sort: 'newest'
+                    })
+                    setPage(1)
+                  }}
                   className="bg-yellow-500 text-black px-6 py-2 rounded-lg hover:bg-yellow-600 transition"
                 >
                   Clear Filters
@@ -319,6 +325,29 @@ export default function ProductsPage() {
                 {products.map(product => (
                   <ProductCard key={product.id} product={product} view={view} />
                 ))}
+              </div>
+            )}
+
+            {/* Pagination */}
+            {totalCount > ITEMS_PER_PAGE && (
+              <div className="flex justify-center items-center gap-2 mt-8">
+                <button
+                  onClick={() => setPage(p => Math.max(1, p - 1))}
+                  disabled={page <= 1}
+                  className="px-4 py-2 bg-white border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 font-medium"
+                >
+                  Previous
+                </button>
+                <span className="px-4 py-2 text-gray-700 font-medium">
+                  Page {page} of {Math.ceil(totalCount / ITEMS_PER_PAGE)}
+                </span>
+                <button
+                  onClick={() => setPage(p => Math.min(Math.ceil(totalCount / ITEMS_PER_PAGE), p + 1))}
+                  disabled={page >= Math.ceil(totalCount / ITEMS_PER_PAGE)}
+                  className="px-4 py-2 bg-white border rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-gray-900 font-medium"
+                >
+                  Next
+                </button>
               </div>
             )}
           </main>

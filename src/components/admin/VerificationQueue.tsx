@@ -6,7 +6,7 @@ interface VerificationItem {
   title: string
   submittedBy: string
   submittedDate: string
-  status: "pending" | "flagged" | "approved"
+  status: "pending" | "flagged" | "approved" | "rejected"
   reason?: string
 }
 
@@ -14,9 +14,11 @@ interface VerificationQueueProps {
   items: VerificationItem[]
   loading: boolean
   error: string | null
+  onApprove?: (item: VerificationItem) => void
+  onReject?: (item: VerificationItem) => void
 }
 
-const VerificationQueue = ({ items, loading, error }: VerificationQueueProps) => {
+const VerificationQueue = ({ items, loading, error, onApprove, onReject }: VerificationQueueProps) => {
   if (loading) {
     return (
       <div className="bg-white rounded-lg shadow p-8">
@@ -113,10 +115,16 @@ const VerificationQueue = ({ items, loading, error }: VerificationQueueProps) =>
                 <div className="flex gap-2">
                   {item.status === "pending" && (
                     <>
-                      <button className="px-4 py-2 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition">
+                      <button
+                        className="px-4 py-2 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition"
+                        onClick={() => onApprove?.(item)}
+                      >
                         Approve
                       </button>
-                      <button className="px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition">
+                      <button
+                        className="px-4 py-2 bg-red-500 text-white rounded-lg font-medium hover:bg-red-600 transition"
+                        onClick={() => onReject?.(item)}
+                      >
                         Reject
                       </button>
                     </>

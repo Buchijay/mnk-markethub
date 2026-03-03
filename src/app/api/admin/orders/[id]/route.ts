@@ -1,22 +1,22 @@
-// src/app/api/admin/orders/[id]/route.js
+// src/app/api/admin/orders/[id]/route.ts
 // Order detail endpoints: GET, PATCH
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { validateAdminRequest, errorResponse, successResponse } from '@/lib/utils/admin-auth';
 import { idParamSchema, orderUpdateSchema, validateBody } from '@/lib/validations/admin';
 import { adminDb } from '@/lib/supabase-server';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * GET /api/admin/orders/[id]
  * Returns order with items and vendor details
  */
-export async function GET(request, { params }) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const { error: authError } = await validateAdminRequest(request);
   if (authError) return authError;
 
   try {
-    const { id } = await params;
-    
+    const { id } = params;
     // Validate ID
     const idValidation = idParamSchema.safeParse({ id });
     if (!idValidation.success) {
@@ -71,8 +71,8 @@ export async function GET(request, { params }) {
       .order('created_at', { ascending: false });
 
     // Group items by vendor
-    const itemsByVendor = {};
-    order.items?.forEach(item => {
+    const itemsByVendor: Record<string, any> = {};
+    order.items?.forEach((item: any) => {
       const vendorId = item.vendor?.id || 'unknown';
       if (!itemsByVendor[vendorId]) {
         itemsByVendor[vendorId] = {
@@ -91,7 +91,7 @@ export async function GET(request, { params }) {
       itemsByVendor: Object.values(itemsByVendor),
     });
   } catch (error) {
-    console.error('Order GET error:', error);
+    logger.error(error instanceof Error ? error.message : String(error));
     return errorResponse('Failed to fetch order details', 500);
   }
 }
@@ -100,13 +100,12 @@ export async function GET(request, { params }) {
  * PATCH /api/admin/orders/[id]
  * Update order status, add tracking number
  */
-export async function PATCH(request, { params }) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   const { error: authError, profile } = await validateAdminRequest(request);
   if (authError) return authError;
 
   try {
-    const { id } = await params;
-    
+    const { id } = params;
     // Validate ID
     const idValidation = idParamSchema.safeParse({ id });
     if (!idValidation.success) {
@@ -116,7 +115,6 @@ export async function PATCH(request, { params }) {
     // Parse and validate body
     const body = await request.json();
     const { data: updateData, error: validationError } = validateBody(body, orderUpdateSchema);
-    
     if (validationError) {
       return errorResponse(validationError.message, 400, validationError.details);
     }
@@ -132,7 +130,7 @@ export async function PATCH(request, { params }) {
     }
 
     // Prepare update data
-    const updates = {
+    const updates: any = {
       ...updateData,
       updated_at: new Date().toISOString(),
     };
@@ -162,23 +160,11 @@ export async function PATCH(request, { params }) {
     const { data: order, error: updateError } = await adminDb.from('orders')
       .update(updates)
       .eq('id', id)
-      .select()
+      .select('*')
       .single();
 
     if (updateError) {
       throw updateError;
-    }
-
-    // Add to order history
-    if (updateData.status && updateData.status !== existingOrder.status) {
-      await adminDb.from('order_history').insert({
-        order_id: id,
-        previous_status: existingOrder.status,
-        new_status: updateData.status,
-        changed_by: profile?.id,
-        notes: updateData.admin_notes || `Status changed to ${updateData.status}`,
-        created_at: new Date().toISOString(),
-      });
     }
 
     return successResponse({
@@ -186,7 +172,7 @@ export async function PATCH(request, { params }) {
       order,
     });
   } catch (error) {
-    console.error('Order PATCH error:', error);
+    logger.error(error instanceof Error ? error.message : String(error));
     return errorResponse('Failed to update order', 500);
   }
 }

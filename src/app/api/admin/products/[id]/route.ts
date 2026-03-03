@@ -1,22 +1,22 @@
-// src/app/api/admin/products/[id]/route.js
+// src/app/api/admin/products/[id]/route.ts
 // Product detail endpoints: GET, PATCH, DELETE
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { validateAdminRequest, errorResponse, successResponse } from '@/lib/utils/admin-auth';
 import { idParamSchema, productUpdateSchema, validateBody } from '@/lib/validations/admin';
 import { adminDb } from '@/lib/supabase-server';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * GET /api/admin/products/[id]
  * Returns product with vendor details
  */
-export async function GET(request, { params }) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const { error: authError } = await validateAdminRequest(request);
   if (authError) return authError;
 
   try {
-    const { id } = await params;
-    
+    const { id } = params;
     // Validate ID
     const idValidation = idParamSchema.safeParse({ id });
     if (!idValidation.success) {
@@ -60,8 +60,8 @@ export async function GET(request, { params }) {
       .eq('product_id', id);
 
     // Calculate stats
-    const totalSales = orderItems?.reduce((sum, item) => sum + item.quantity, 0) || 0;
-    const totalRevenue = orderItems?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
+    const totalSales = orderItems?.reduce((sum: number, item: any) => sum + item.quantity, 0) || 0;
+    const totalRevenue = orderItems?.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0) || 0;
 
     const stats = {
       totalSales,
@@ -74,7 +74,7 @@ export async function GET(request, { params }) {
       stats,
     });
   } catch (error) {
-    console.error('Product GET error:', error);
+    logger.error({ err: error }, 'Product GET error');
     return errorResponse('Failed to fetch product details', 500);
   }
 }
@@ -83,13 +83,12 @@ export async function GET(request, { params }) {
  * PATCH /api/admin/products/[id]
  * Update product (status, approval, featured)
  */
-export async function PATCH(request, { params }) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   const { error: authError } = await validateAdminRequest(request);
   if (authError) return authError;
 
   try {
-    const { id } = await params;
-    
+    const { id } = params;
     // Validate ID
     const idValidation = idParamSchema.safeParse({ id });
     if (!idValidation.success) {
@@ -99,7 +98,6 @@ export async function PATCH(request, { params }) {
     // Parse and validate body
     const body = await request.json();
     const { data: updateData, error: validationError } = validateBody(body, productUpdateSchema);
-    
     if (validationError) {
       return errorResponse(validationError.message, 400, validationError.details);
     }
@@ -115,7 +113,7 @@ export async function PATCH(request, { params }) {
     }
 
     // Prepare update data
-    const updates = {
+    const updates: any = {
       ...updateData,
       updated_at: new Date().toISOString(),
     };
@@ -153,7 +151,7 @@ export async function PATCH(request, { params }) {
       product,
     });
   } catch (error) {
-    console.error('Product PATCH error:', error);
+    logger.error({ err: error }, 'Product PATCH error');
     return errorResponse('Failed to update product', 500);
   }
 }
@@ -162,13 +160,12 @@ export async function PATCH(request, { params }) {
  * DELETE /api/admin/products/[id]
  * Soft delete product
  */
-export async function DELETE(request, { params }) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   const { error: authError } = await validateAdminRequest(request);
   if (authError) return authError;
 
   try {
-    const { id } = await params;
-    
+    const { id } = params;
     // Validate ID
     const idValidation = idParamSchema.safeParse({ id });
     if (!idValidation.success) {
@@ -185,24 +182,23 @@ export async function DELETE(request, { params }) {
       return errorResponse('Product not found', 404);
     }
 
-    // Soft delete - update status to archived and set deleted_at
-    const { error: deleteError } = await adminDb.from('products')
-      .update({
-        status: 'archived',
-        deleted_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', id);
+    // Soft delete: set deleted_at
+    const { data: product, error: updateError } = await adminDb.from('products')
+      .update({ deleted_at: new Date().toISOString() })
+      .eq('id', id)
+      .select('id, deleted_at')
+      .single();
 
-    if (deleteError) {
-      throw deleteError;
+    if (updateError) {
+      throw updateError;
     }
 
     return successResponse({
       message: 'Product deleted successfully',
+      product,
     });
   } catch (error) {
-    console.error('Product DELETE error:', error);
+    logger.error({ err: error }, 'Product DELETE error');
     return errorResponse('Failed to delete product', 500);
   }
 }

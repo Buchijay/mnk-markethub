@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Search, Filter, Check, X, Eye, AlertCircle } from 'lucide-react';
+import { logger } from '@/lib/utils/logger'
 
 // Type definitions
 type VendorStatus = 'pending' | 'approved' | 'rejected' | 'suspended';
@@ -80,7 +81,7 @@ export default function AdminVendorsPage() {
       setVendors(data.vendors);
       setPagination(data.pagination);
     } catch (err) {
-      console.error('Error loading vendors:', err);
+      logger.error('Error loading vendors:', err);
       setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
       setLoading(false);

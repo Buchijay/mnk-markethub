@@ -8,6 +8,7 @@ import { useAuth } from '@/lib/hooks/useAuth'
 import { getFavorites, removeFavorite } from '@/lib/services/favorites'
 import { Heart, ShoppingBag, Home, Car, ArrowRight, Trash2, Package } from 'lucide-react'
 import type { Favorite, Product, Property, Vehicle } from '@/lib/types/database.types'
+import { logger } from '@/lib/utils/logger'
 
 interface FavoriteWithItem extends Favorite {
   item?: Product | Property | Vehicle | null
@@ -76,7 +77,7 @@ export default function FavoritesPage() {
 
       setFavorites(favoritesWithItems)
     } catch (error) {
-      console.error('Error loading favorites:', error)
+      logger.error('Error loading favorites:', error)
     } finally {
       setLoading(false)
     }
@@ -90,7 +91,7 @@ export default function FavoritesPage() {
       await removeFavorite(user.id, favorite.item_type, favorite.item_id)
       setFavorites(favorites.filter(f => f.id !== favorite.id))
     } catch (error) {
-      console.error('Error removing favorite:', error)
+      logger.error('Error removing favorite:', error)
     } finally {
       setRemoving(null)
     }
@@ -132,7 +133,7 @@ export default function FavoritesPage() {
           ].map(({ key, label, icon: Icon }) => (
             <button
               key={key}
-              onClick={() => setFilter(key as any)}
+              onClick={() => setFilter(key as typeof filter)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
                 filter === key
                   ? 'bg-blue-600 text-white'

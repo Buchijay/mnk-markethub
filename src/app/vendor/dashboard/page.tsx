@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { supabase } from '@/lib/supabase/client';
-import { 
+import {
   Package, 
   Home as HomeIcon, 
   Car, 
@@ -12,7 +12,9 @@ import {
   Eye, 
   ShoppingCart,
   DollarSign,
-  MessageSquare
+  MessageSquare,
+  HelpCircle,
+  FileText,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -35,6 +37,7 @@ export default function VendorDashboard() {
   }, [profile]);
 
   async function loadDashboardData() {
+    if (!profile || !profile.vendor) return;
     const vendor_id = profile.vendor.id;
 
     // Fetch products stats
@@ -54,6 +57,21 @@ export default function VendorDashboard() {
       .from('vehicles')
       .select('status, views_count, inquiries_count')
       .eq('vendor_id', vendor_id);
+
+    // Fetch revenue from delivered orders via order_items
+    const { data: orderItems } = await supabase
+      .from('order_items')
+      .select('total')
+      .eq('vendor_id', vendor_id);
+
+    const revenue = orderItems?.reduce((sum, o) => sum + (o.total || 0), 0) || 0;
+
+    // Count unread messages
+    const { count: unreadMessages } = await supabase
+      .from('messages')
+      .select('*', { count: 'exact', head: true })
+      .eq('receiver_id', profile.id)
+      .eq('is_read', false);
 
     // Calculate stats
     setStats({
@@ -75,8 +93,8 @@ export default function VendorDashboard() {
         views: vehicles?.reduce((sum, v) => sum + (v.views_count || 0), 0) || 0,
         inquiries: vehicles?.reduce((sum, v) => sum + (v.inquiries_count || 0), 0) || 0,
       },
-      revenue: 0, // Calculate from orders
-      messages: 0, // Count unread messages
+      revenue,
+      messages: unreadMessages || 0,
     });
 
     setLoading(false);
@@ -293,6 +311,20 @@ export default function VendorDashboard() {
             >
               <DollarSign className="mx-auto mb-2 text-gray-700" size={32} />
               <p className="font-semibold text-gray-900">Settings</p>
+            </Link>
+            <Link
+              href="/vendor/help"
+              className="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-600 transition text-center"
+            >
+              <HelpCircle className="mx-auto mb-2 text-gray-700" size={32} />
+              <p className="font-semibold text-gray-900">Help Center</p>
+            </Link>
+            <Link
+              href="/vendor/policies"
+              className="p-4 border-2 border-gray-200 rounded-lg hover:border-blue-600 transition text-center"
+            >
+              <FileText className="mx-auto mb-2 text-gray-700" size={32} />
+              <p className="font-semibold text-gray-900">Policies</p>
             </Link>
           </div>
         </div>

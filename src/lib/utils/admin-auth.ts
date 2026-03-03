@@ -4,6 +4,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { logger } from '@/lib/utils/logger'
 
 /**
  * Validates that the request is from an authenticated admin user
@@ -81,7 +82,7 @@ export async function validateAdminRequest(request) {
 
     return { user, profile, error: null };
   } catch (error) {
-    console.error('Admin auth validation error:', error);
+    logger.error('Admin auth validation error:', error);
     return {
       user: null,
       profile: null,
@@ -116,7 +117,7 @@ export function withAdminAuth(handler) {
 /**
  * Standard error response helper
  */
-export function errorResponse(message, status = 500, details = null) {
+export function errorResponse(message: string, status: number = 500, details: any = null) {
   const response = {
     error: status >= 500 ? 'Internal Server Error' : 'Bad Request',
     message,
@@ -132,7 +133,7 @@ export function errorResponse(message, status = 500, details = null) {
 /**
  * Standard success response helper
  */
-export function successResponse(data, status = 200) {
+export function successResponse(data: any, status: number = 200) {
   return NextResponse.json(data, { status });
 }
 

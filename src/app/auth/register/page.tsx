@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase/client'
 import toast from 'react-hot-toast'
+import { logger } from '@/lib/utils/logger'
 import {
   Mail,
   Lock,
@@ -73,7 +74,7 @@ export default function RegisterPage() {
 
       if (authData.user) {
         // Create profile record
-        const { error: profileError } = await (supabase as any)
+        const { error: profileError } = await supabase
           .from('profiles')
           .upsert({
             id: authData.user.id,
@@ -87,7 +88,7 @@ export default function RegisterPage() {
           })
 
         if (profileError) {
-          console.error('Profile creation error:', profileError)
+          logger.error('Profile creation error:', profileError)
         }
       }
 

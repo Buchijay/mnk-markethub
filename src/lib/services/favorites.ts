@@ -44,7 +44,7 @@ export async function addFavorite(userId: string, itemType: 'product' | 'propert
       user_id: userId,
       item_type: itemType,
       item_id: itemId,
-    } as any)
+    })
     .select('*')
     .single()
 

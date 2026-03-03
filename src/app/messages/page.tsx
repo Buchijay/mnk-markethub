@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { supabase } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/hooks/useAuth'
+import { logger } from '@/lib/utils/logger'
 import {
   getConversations,
   getMessagesBetweenUsers,
@@ -66,7 +67,7 @@ export default function MessagesPage() {
       const convs = await getConversations(user.id)
       setConversations(convs)
     } catch (error) {
-      console.error('Error loading conversations:', error)
+      logger.error('Error loading conversations:', error)
     } finally {
       setLoading(false)
     }
@@ -89,7 +90,7 @@ export default function MessagesPage() {
         }
       })
     } catch (error) {
-      console.error('Error loading messages:', error)
+      logger.error('Error loading messages:', error)
     }
   }
 
@@ -106,7 +107,7 @@ export default function MessagesPage() {
         setConversations([conversation, ...conversations])
       }
     } catch (error) {
-      console.error('Error creating conversation:', error)
+      logger.error('Error creating conversation:', error)
     }
   }
 
@@ -129,7 +130,7 @@ export default function MessagesPage() {
       setMessages([...messages, msg])
       setNewMessage('')
     } catch (error) {
-      console.error('Error sending message:', error)
+      logger.error('Error sending message:', error)
     } finally {
       setSending(false)
     }
@@ -137,8 +138,12 @@ export default function MessagesPage() {
 
   const filteredConversations = conversations.filter(conv => {
     if (!searchTerm) return true
-    // Search by vendor/user name if implemented
-    return true
+    const term = searchTerm.toLowerCase()
+    return (
+      conv.last_message?.toLowerCase().includes(term) ||
+      conv.vendor_id?.toLowerCase().includes(term) ||
+      conv.user_id?.toLowerCase().includes(term)
+    )
   })
 
   if (authLoading || loading) {

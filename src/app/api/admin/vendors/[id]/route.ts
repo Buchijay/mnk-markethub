@@ -1,22 +1,22 @@
-// src/app/api/admin/vendors/[id]/route.js
+// src/app/api/admin/vendors/[id]/route.ts
 // Vendor detail endpoints: GET, PATCH, DELETE
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { validateAdminRequest, errorResponse, successResponse } from '@/lib/utils/admin-auth';
 import { idParamSchema, vendorUpdateSchema, validateBody } from '@/lib/validations/admin';
 import { adminDb } from '@/lib/supabase-server';
+import { logger } from '@/lib/utils/logger';
 
 /**
  * GET /api/admin/vendors/[id]
  * Returns vendor with products and stats
  */
-export async function GET(request, { params }) {
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
   const { error: authError } = await validateAdminRequest(request);
   if (authError) return authError;
 
   try {
-    const { id } = await params;
-    
+    const { id } = params;
     // Validate ID
     const idValidation = idParamSchema.safeParse({ id });
     if (!idValidation.success) {
@@ -76,11 +76,11 @@ export async function GET(request, { params }) {
     ]);
 
     // Calculate stats
-    const completedOrders = orderStats?.filter(item => 
+    const completedOrders = orderStats?.filter((item: any) =>
       item.order?.status === 'delivered' || item.order?.status === 'completed'
     ) || [];
-    
-    const totalRevenue = completedOrders.reduce((sum, item) => 
+
+    const totalRevenue = completedOrders.reduce((sum: number, item: any) =>
       sum + (item.price * item.quantity), 0
     );
 
@@ -98,7 +98,7 @@ export async function GET(request, { params }) {
       stats,
     });
   } catch (error) {
-    console.error('Vendor GET error:', error);
+    logger.error({ err: error }, 'Vendor GET error');
     return errorResponse('Failed to fetch vendor details', 500);
   }
 }
@@ -107,13 +107,12 @@ export async function GET(request, { params }) {
  * PATCH /api/admin/vendors/[id]
  * Update vendor (status, commission, notes)
  */
-export async function PATCH(request, { params }) {
+export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
   const { error: authError, profile } = await validateAdminRequest(request);
   if (authError) return authError;
 
   try {
-    const { id } = await params;
-    
+    const { id } = params;
     // Validate ID
     const idValidation = idParamSchema.safeParse({ id });
     if (!idValidation.success) {
@@ -123,7 +122,6 @@ export async function PATCH(request, { params }) {
     // Parse and validate body
     const body = await request.json();
     const { data: updateData, error: validationError } = validateBody(body, vendorUpdateSchema);
-    
     if (validationError) {
       return errorResponse(validationError.message, 400, validationError.details);
     }
@@ -139,7 +137,7 @@ export async function PATCH(request, { params }) {
     }
 
     // Prepare update data
-    const updates = {
+    const updates: any = {
       ...updateData,
       updated_at: new Date().toISOString(),
     };
@@ -165,7 +163,7 @@ export async function PATCH(request, { params }) {
       vendor,
     });
   } catch (error) {
-    console.error('Vendor PATCH error:', error);
+    logger.error({ err: error }, 'Vendor PATCH error');
     return errorResponse('Failed to update vendor', 500);
   }
 }
@@ -174,13 +172,12 @@ export async function PATCH(request, { params }) {
  * DELETE /api/admin/vendors/[id]
  * Soft delete vendor
  */
-export async function DELETE(request, { params }) {
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
   const { error: authError } = await validateAdminRequest(request);
   if (authError) return authError;
 
   try {
-    const { id } = await params;
-    
+    const { id } = params;
     // Validate ID
     const idValidation = idParamSchema.safeParse({ id });
     if (!idValidation.success) {
@@ -197,32 +194,23 @@ export async function DELETE(request, { params }) {
       return errorResponse('Vendor not found', 404);
     }
 
-    // Soft delete - update status and set deleted_at
-    const { error: deleteError } = await adminDb.from('vendors')
-      .update({
-        verification_status: 'suspended',
-        deleted_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', id);
+    // Soft delete: set deleted_at
+    const { data: vendor, error: updateError } = await adminDb.from('vendors')
+      .update({ deleted_at: new Date().toISOString() })
+      .eq('id', id)
+      .select('id, deleted_at')
+      .single();
 
-    if (deleteError) {
-      throw deleteError;
+    if (updateError) {
+      throw updateError;
     }
-
-    // Also deactivate all vendor's products
-    await adminDb.from('products')
-      .update({ 
-        status: 'archived',
-        updated_at: new Date().toISOString(),
-      })
-      .eq('vendor_id', id);
 
     return successResponse({
       message: 'Vendor deleted successfully',
+      vendor,
     });
   } catch (error) {
-    console.error('Vendor DELETE error:', error);
+    logger.error({ err: error }, 'Vendor DELETE error');
     return errorResponse('Failed to delete vendor', 500);
   }
 }

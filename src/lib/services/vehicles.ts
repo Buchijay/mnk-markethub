@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase/client'
 import type { Vehicle } from '@/lib/types/database.types'
+import { logger } from '@/lib/utils/logger'
 
 export interface VehicleFilters {
   search?: string
@@ -27,9 +28,9 @@ export async function getVehicleBySlug(slug: string) {
       .single()
 
     if (error) throw error
-    return { vehicle: data as any, error: null }
+    return { vehicle: data as unknown as Vehicle & { vendor: any }, error: null }
   } catch (error) {
-    console.error('Error fetching vehicle:', error)
+    logger.error('Error fetching vehicle:', error)
     return { vehicle: null, error }
   }
 }
@@ -109,9 +110,9 @@ export async function getVehiclesByFilters(filters: VehicleFilters) {
     const { data, error, count } = await query
 
     if (error) throw error
-    return { vehicles: (data || []) as any[], count, error: null }
+    return { vehicles: (data || []) as unknown as (Vehicle & { vendor: any })[], count, error: null }
   } catch (error) {
-    console.error('Error fetching vehicles:', error)
+    logger.error('Error fetching vehicles:', error)
     return { vehicles: [], count: 0, error }
   }
 }
@@ -128,9 +129,9 @@ export async function getRelatedVehicles(vehicleId: string, make: string, limit 
       .limit(limit)
 
     if (error) throw error
-    return { vehicles: (data || []) as any[], error: null }
+    return { vehicles: (data || []) as unknown as (Vehicle & { vendor: any })[], error: null }
   } catch (error) {
-    console.error('Error fetching related vehicles:', error)
+    logger.error('Error fetching related vehicles:', error)
     return { vehicles: [], error }
   }
 }
@@ -180,7 +181,7 @@ export const vehiclesService = {
         .sort((a, b) => b.count - a.count)
         .slice(0, 10)
     } catch (error) {
-      console.error('Error fetching popular makes:', error)
+      logger.error('Error fetching popular makes:', error)
       return []
     }
   },

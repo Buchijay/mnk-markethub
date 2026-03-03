@@ -43,7 +43,7 @@ export async function sendMessage(senderId: string, receiverId: string, content:
       receiver_id: receiverId,
       content: content,
       is_read: false,
-    } as any)
+    })
     .select('*')
     .single()
 
@@ -90,7 +90,7 @@ export async function createOrGetConversation(userId: string, vendorId: string) 
       user_id: userId,
       vendor_id: vendorId,
       unread_count: 0,
-    } as any)
+    })
     .select('*')
     .single()
 

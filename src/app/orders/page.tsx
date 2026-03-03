@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/hooks/useAuth'
+import { logger } from '@/lib/utils/logger'
 import {
   Package,
   Clock,
@@ -54,14 +55,14 @@ export default function OrdersPage() {
         .order('created_at', { ascending: false })
 
       if (filter !== 'all') {
-        query = query.eq('status', filter)
+        query = query.eq('status', filter as Order['status'])
       }
 
       const { data, error } = await query
       if (error) throw error
       setOrders((data as Order[]) || [])
     } catch (err) {
-      console.error('Error loading orders:', err)
+      logger.error('Error loading orders:', err)
       setOrders([])
     } finally {
       setLoading(false)
@@ -186,7 +187,7 @@ export default function OrdersPage() {
             {orders.map((order) => {
               const status = statusConfig[order.status] || statusConfig.pending
               const StatusIcon = status.icon
-              const address = order.shipping_address as any
+              const address = order.shipping_address as Record<string, string>
 
               return (
                 <div key={order.id} className="bg-white rounded-2xl shadow-lg border hover:shadow-xl transition overflow-hidden">

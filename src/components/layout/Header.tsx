@@ -71,14 +71,13 @@ export default function Header() {
       <div className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between gap-4">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-600 to-amber-500 flex items-center justify-center text-white shadow-lg">
+          <Link href="/" className="flex items-baseline gap-2 hover:opacity-80 transition">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-amber-600 to-amber-500 flex items-center justify-center text-white shadow-lg self-center">
               <Store size={22} />
             </div>
-            <span className="hidden sm:inline text-xl font-bold text-white">
-              MK Solution
+            <span className="hidden sm:inline text-xl font-bold text-white leading-none">
+              MK Solution<span className="hidden lg:inline text-xs text-gray-300 font-medium ml-1">Ltd</span>
             </span>
-            <span className="hidden lg:inline text-xs text-gray-300 font-medium ml-1">Ltd</span>
           </Link>
 
           {/* Search Bar - Desktop */}
@@ -224,13 +223,8 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <Link href="/vendors" className="text-gray-200 hover:text-amber-500 transition">
-                Top Vendors
-              </Link>
-            </li>
-            <li>
-              <Link href="/deals" className="text-red-400 hover:text-red-300 transition font-bold">
-                🔥 Hot Deals
+              <Link href="/search" className="text-gray-200 hover:text-amber-500 transition">
+                Browse All
               </Link>
             </li>
           </ul>
@@ -248,13 +242,18 @@ export default function Header() {
                 </Link>
               </li>
               <li>
-                <Link href="/vendors" className="block hover:text-amber-500 transition">
-                  Top Vendors
+                <Link href="/automotive" className="block hover:text-amber-500 transition">
+                  Automotive
                 </Link>
               </li>
               <li>
-                <Link href="/deals" className="block text-red-400 hover:text-red-300 transition">
-                  🔥 Hot Deals
+                <Link href="/real-estate" className="block hover:text-amber-500 transition">
+                  Real Estate
+                </Link>
+              </li>
+              <li>
+                <Link href="/search" className="block hover:text-amber-500 transition">
+                  Browse All
                 </Link>
               </li>
               <li className="border-t border-gray-700 pt-3">

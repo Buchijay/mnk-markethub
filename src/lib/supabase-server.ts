@@ -1,17 +1,18 @@
-// src/lib/supabase-server.js
 // Server-side Supabase client with SERVICE ROLE key
 // Use this for admin operations that bypass Row Level Security (RLS)
 // WARNING: Never expose this client to the browser
 
-import { createClient } from '@supabase/supabase-js';
+import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import type { Database } from '@/lib/types/database.types';
+import { logger } from '@/lib/utils/logger';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 // Create admin client with service role key (may be null if key is missing)
 // This client bypasses RLS policies - use with caution
-export const supabaseAdmin = supabaseUrl && supabaseServiceRoleKey 
-  ? createClient(supabaseUrl, supabaseServiceRoleKey, {
+export const supabaseAdmin: SupabaseClient<Database> | null = supabaseUrl && supabaseServiceRoleKey 
+  ? createClient<Database>(supabaseUrl, supabaseServiceRoleKey, {
       auth: {
         autoRefreshToken: false,
         persistSession: false,
@@ -32,16 +33,16 @@ function ensureServer() {
 // Admin auth operations
 export const adminAuth = {
   // Get user by ID (bypasses RLS)
-  async getUserById(userId) {
+  async getUserById(userId: string) {
     ensureServer();
-    const { data, error } = await supabaseAdmin.auth.admin.getUserById(userId);
+    const { data, error } = await supabaseAdmin!.auth.admin.getUserById(userId);
     return { data, error };
   },
 
   // List all users with pagination
   async listUsers(page = 1, perPage = 50) {
     ensureServer();
-    const { data, error } = await supabaseAdmin.auth.admin.listUsers({
+    const { data, error } = await supabaseAdmin!.auth.admin.listUsers({
       page,
       perPage,
     });
@@ -49,25 +50,25 @@ export const adminAuth = {
   },
 
   // Update user metadata
-  async updateUserMetadata(userId, metadata) {
+  async updateUserMetadata(userId: string, metadata: Record<string, unknown>) {
     ensureServer();
-    const { data, error } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+    const { data, error } = await supabaseAdmin!.auth.admin.updateUserById(userId, {
       user_metadata: metadata,
     });
     return { data, error };
   },
 
   // Delete user
-  async deleteUser(userId) {
+  async deleteUser(userId: string) {
     ensureServer();
-    const { data, error } = await supabaseAdmin.auth.admin.deleteUser(userId);
+    const { data, error } = await supabaseAdmin!.auth.admin.deleteUser(userId);
     return { data, error };
   },
 
   // Ban/unban user
-  async setBanStatus(userId, banned) {
+  async setBanStatus(userId: string, banned: boolean) {
     ensureServer();
-    const { data, error } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+    const { data, error } = await supabaseAdmin!.auth.admin.updateUserById(userId, {
       ban_duration: banned ? 'none' : '0',
     });
     return { data, error };
@@ -77,15 +78,15 @@ export const adminAuth = {
 // Admin database operations (bypasses RLS)
 export const adminDb = {
   // Generic query builder - use for any table
-  from(table) {
+  from(table: string) {
     ensureServer();
-    return supabaseAdmin.from(table);
+    return supabaseAdmin!.from(table);
   },
 
   // Execute raw SQL (use sparingly)
-  async rpc(functionName, params = {}) {
+  async rpc(functionName: string, params: Record<string, unknown> = {}) {
     ensureServer();
-    const { data, error } = await supabaseAdmin.rpc(functionName, params);
+    const { data, error } = await supabaseAdmin!.rpc(functionName, params);
     return { data, error };
   },
 };
@@ -95,37 +96,40 @@ export const adminStorage = {
   // List all buckets
   async listBuckets() {
     ensureServer();
-    const { data, error } = await supabaseAdmin.storage.listBuckets();
+    const { data, error } = await supabaseAdmin!.storage.listBuckets();
     return { data, error };
   },
 
   // Get bucket
-  getBucket(bucketName) {
+  getBucket(bucketName: string) {
     ensureServer();
-    return supabaseAdmin.storage.from(bucketName);
+    return supabaseAdmin!.storage.from(bucketName);
   },
 
   // Delete file from any bucket
-  async deleteFile(bucketName, filePath) {
+  async deleteFile(bucketName: string, filePath: string) {
     ensureServer();
-    const { data, error } = await supabaseAdmin.storage
+    const { data, error } = await supabaseAdmin!.storage
       .from(bucketName)
       .remove([filePath]);
     return { data, error };
   },
 };
 
-// Helper function to create a server client (returns the admin client)
-export function createServerClient() {
+/**
+ * Returns the typed service-role client.
+ * Prefer using `adminDb`, `adminAuth`, `adminStorage` wrappers instead.
+ */
+export function getAdminClient(): SupabaseClient<Database> {
   ensureServer();
-  return supabaseAdmin;
+  return supabaseAdmin!;
 }
 
 // Verify if a user is an admin
 export async function verifyAdmin(userId: string) {
   ensureServer();
   try {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin!
       .from('profiles')
       .select('role')
       .eq('id', userId)
@@ -151,7 +155,7 @@ export async function logAdminAction(
 ) {
   ensureServer();
   try {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin!
       .from('admin_logs')
       .insert({
         admin_id: adminId,
@@ -164,7 +168,7 @@ export async function logAdminAction(
 
     return { data, error };
   } catch (error) {
-    console.error('Failed to log admin action:', error);
+    logger.error('Failed to log admin action:', error);
     return { data: null, error };
   }
 }

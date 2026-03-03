@@ -8,6 +8,7 @@ import { supabase } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/hooks/useAuth'
 import toast from 'react-hot-toast'
 import { NIGERIAN_STATES } from '@/lib/utils/constants'
+import { logger } from '@/lib/utils/logger'
 import {
   CreditCard,
   MapPin,
@@ -107,10 +108,10 @@ export default function CheckoutPage() {
       const orderNumber = `MKS-${Date.now().toString(36).toUpperCase()}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`
 
       // Create order in Supabase
-      const { data: order, error: orderError } = await (supabase as any)
+      const { data: order, error: orderError } = await supabase
         .from('orders')
         .insert({
-          user_id: user?.id || null,
+          user_id: user?.id || '',
           order_number: orderNumber,
           status: 'pending',
           subtotal,
@@ -150,7 +151,7 @@ export default function CheckoutPage() {
           status: 'pending',
         }))
 
-        await (supabase as any).from('order_items').insert(orderItems)
+        await supabase.from('order_items').insert(orderItems)
       }
 
       // Clear cart
@@ -160,12 +161,8 @@ export default function CheckoutPage() {
       toast.success('Order placed successfully!')
       router.push(`/orders?success=${orderNumber}`)
     } catch (err: any) {
-      console.error('Order error:', err)
-      // If order table doesn't exist, simulate success
-      localStorage.setItem('cart', '[]')
-      window.dispatchEvent(new Event('cartUpdated'))
-      toast.success('Order placed successfully!')
-      router.push('/orders')
+      logger.error('Order error:', err)
+      toast.error(err?.message || 'Failed to place order. Please try again.')
     } finally {
       setLoading(false)
     }

@@ -1,0 +1,269 @@
+﻿.next/dev/types/validator.ts(125,39): error TS2306: File 'C:/Users/user/Desktop/mnk-marketplace/src/app/api/admin/stats/[id]/page.tsx' is not a module.
+src/app/admin/dashboard/page.tsx(37,22): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+src/app/admin/verification/page.tsx(28,18): error TS2345: Argument of type 'VerificationItem[]' is not assignable to parameter of type 'SetStateAction<VerificationItem[]>'.
+  Type 'import("C:/Users/user/Desktop/mnk-marketplace/src/lib/services/admin/verification").VerificationItem[]' is not assignable to type 'VerificationItem[]'.
+    Type 'import("C:/Users/user/Desktop/mnk-marketplace/src/lib/services/admin/verification").VerificationItem' is not assignable to type 'VerificationItem'.
+      Types of property 'status' are incompatible.
+        Type '"pending" | "rejected" | "approved" | "flagged"' is not assignable to type '"pending" | "approved" | "flagged"'.
+          Type '"rejected"' is not assignable to type '"pending" | "approved" | "flagged"'.
+src/app/admin/verification/page.tsx(31,22): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string'.
+src/app/api/admin/orders/route.ts(10,27): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/app/api/admin/orders/route.ts(117,27): error TS7006: Parameter 'item' implicitly has an 'any' type.
+src/app/api/admin/orders/route.ts(132,9): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+src/app/api/admin/orders/route.ts(132,31): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+src/app/api/admin/products/route.ts(10,27): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/app/api/admin/products/route.ts(104,9): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+src/app/api/admin/products/route.ts(104,35): error TS7053: Element implicitly has an 'any' type because expression of type 'any' can't be used to index type '{}'.
+src/app/api/admin/stats/route.ts(9,27): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/app/api/admin/vendors/route.ts(10,27): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/app/real-estate/page.tsx(31,81): error TS2345: Argument of type '{ listing_type: string; state: string; city: string; category: string; minPrice: string; maxPrice: string; bedrooms: string; sort: string; }' is not assignable to parameter of type 'PropertyFilters'.
+  Types of property 'minPrice' are incompatible.
+    Type 'string' is not assignable to type 'number'.
+src/lib/services/admin.service.ts(12,45): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(17,47): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(23,46): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(28,44): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(33,43): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(41,46): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(47,47): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(65,35): error TS18046: 'error' is of type 'unknown'.
+src/lib/services/admin.service.ts(71,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(88,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(100,12): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+src/lib/services/admin.service.ts(101,9): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+src/lib/services/admin.service.ts(103,7): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+src/lib/services/admin.service.ts(104,7): error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{}'.
+  No index signature with a parameter of type 'string' was found on type '{}'.
+src/lib/services/admin.service.ts(117,17): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(125,17): error TS2339: Property 'status' does not exist on type '{}'.
+src/lib/services/admin.service.ts(126,42): error TS2339: Property 'status' does not exist on type '{}'.
+src/lib/services/admin.service.ts(129,17): error TS2339: Property 'search' does not exist on type '{}'.
+src/lib/services/admin.service.ts(131,41): error TS2339: Property 'search' does not exist on type '{}'.
+src/lib/services/admin.service.ts(131,73): error TS2339: Property 'search' does not exist on type '{}'.
+src/lib/services/admin.service.ts(136,31): error TS2339: Property 'sortBy' does not exist on type '{}'.
+src/lib/services/admin.service.ts(137,31): error TS2339: Property 'sortOrder' does not exist on type '{}'.
+src/lib/services/admin.service.ts(141,17): error TS2339: Property 'page' does not exist on type '{}'.
+src/lib/services/admin.service.ts(141,33): error TS2339: Property 'pageSize' does not exist on type '{}'.
+src/lib/services/admin.service.ts(142,29): error TS2339: Property 'page' does not exist on type '{}'.
+src/lib/services/admin.service.ts(142,49): error TS2339: Property 'pageSize' does not exist on type '{}'.
+src/lib/services/admin.service.ts(143,33): error TS2339: Property 'pageSize' does not exist on type '{}'.
+src/lib/services/admin.service.ts(153,19): error TS7006: Parameter 'vendorId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(154,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(168,19): error TS7006: Parameter 'vendorId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(168,29): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(168,38): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(170,39): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(176,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(195,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/admin.service.ts(204,18): error TS7006: Parameter 'vendorId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(204,28): error TS7006: Parameter 'reason' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(204,36): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(204,45): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(205,39): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(211,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(228,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/admin.service.ts(237,19): error TS7006: Parameter 'vendorId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(237,29): error TS7006: Parameter 'reason' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(237,37): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(237,46): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(238,39): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(244,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(261,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/admin.service.ts(270,22): error TS7006: Parameter 'vendorId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(270,32): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(270,41): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(271,39): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(277,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(294,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/admin.service.ts(303,18): error TS7006: Parameter 'vendorId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(303,28): error TS7006: Parameter 'updates' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(303,37): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(303,46): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(304,39): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(310,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(324,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/admin.service.ts(333,18): error TS7006: Parameter 'vendorId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(333,28): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(333,37): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(334,39): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(340,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(357,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/admin.service.ts(372,17): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(381,17): error TS2339: Property 'status' does not exist on type '{}'.
+src/lib/services/admin.service.ts(382,42): error TS2339: Property 'status' does not exist on type '{}'.
+src/lib/services/admin.service.ts(385,17): error TS2339: Property 'vendorId' does not exist on type '{}'.
+src/lib/services/admin.service.ts(386,45): error TS2339: Property 'vendorId' does not exist on type '{}'.
+src/lib/services/admin.service.ts(389,17): error TS2339: Property 'categoryId' does not exist on type '{}'.
+src/lib/services/admin.service.ts(390,47): error TS2339: Property 'categoryId' does not exist on type '{}'.
+src/lib/services/admin.service.ts(393,17): error TS2339: Property 'search' does not exist on type '{}'.
+src/lib/services/admin.service.ts(395,32): error TS2339: Property 'search' does not exist on type '{}'.
+src/lib/services/admin.service.ts(395,70): error TS2339: Property 'search' does not exist on type '{}'.
+src/lib/services/admin.service.ts(395,100): error TS2339: Property 'search' does not exist on type '{}'.
+src/lib/services/admin.service.ts(400,31): error TS2339: Property 'sortBy' does not exist on type '{}'.
+src/lib/services/admin.service.ts(401,31): error TS2339: Property 'sortOrder' does not exist on type '{}'.
+src/lib/services/admin.service.ts(405,17): error TS2339: Property 'page' does not exist on type '{}'.
+src/lib/services/admin.service.ts(405,33): error TS2339: Property 'pageSize' does not exist on type '{}'.
+src/lib/services/admin.service.ts(406,29): error TS2339: Property 'page' does not exist on type '{}'.
+src/lib/services/admin.service.ts(406,49): error TS2339: Property 'pageSize' does not exist on type '{}'.
+src/lib/services/admin.service.ts(407,33): error TS2339: Property 'pageSize' does not exist on type '{}'.
+src/lib/services/admin.service.ts(417,19): error TS7006: Parameter 'productId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(418,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(433,24): error TS7006: Parameter 'productId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(433,35): error TS7006: Parameter 'status' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(433,43): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(433,52): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(434,40): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(440,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(454,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/admin.service.ts(463,18): error TS7006: Parameter 'productId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(463,29): error TS7006: Parameter 'updates' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(463,38): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(463,47): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(464,40): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(470,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(484,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/admin.service.ts(493,18): error TS7006: Parameter 'productId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(493,29): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(493,38): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(494,40): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(500,29): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(512,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/admin.service.ts(521,26): error TS7006: Parameter 'productId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(521,37): error TS7006: Parameter 'isFeatured' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(521,49): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(521,58): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(522,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(536,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/admin.service.ts(551,17): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(564,17): error TS2339: Property 'status' does not exist on type '{}'.
+src/lib/services/admin.service.ts(565,42): error TS2339: Property 'status' does not exist on type '{}'.
+src/lib/services/admin.service.ts(568,17): error TS2339: Property 'paymentStatus' does not exist on type '{}'.
+src/lib/services/admin.service.ts(569,50): error TS2339: Property 'paymentStatus' does not exist on type '{}'.
+src/lib/services/admin.service.ts(572,17): error TS2339: Property 'search' does not exist on type '{}'.
+src/lib/services/admin.service.ts(574,40): error TS2339: Property 'search' does not exist on type '{}'.
+src/lib/services/admin.service.ts(574,81): error TS2339: Property 'search' does not exist on type '{}'.
+src/lib/services/admin.service.ts(578,17): error TS2339: Property 'dateFrom' does not exist on type '{}'.
+src/lib/services/admin.service.ts(579,47): error TS2339: Property 'dateFrom' does not exist on type '{}'.
+src/lib/services/admin.service.ts(582,17): error TS2339: Property 'dateTo' does not exist on type '{}'.
+src/lib/services/admin.service.ts(583,47): error TS2339: Property 'dateTo' does not exist on type '{}'.
+src/lib/services/admin.service.ts(587,31): error TS2339: Property 'sortBy' does not exist on type '{}'.
+src/lib/services/admin.service.ts(588,31): error TS2339: Property 'sortOrder' does not exist on type '{}'.
+src/lib/services/admin.service.ts(592,17): error TS2339: Property 'page' does not exist on type '{}'.
+src/lib/services/admin.service.ts(592,33): error TS2339: Property 'pageSize' does not exist on type '{}'.
+src/lib/services/admin.service.ts(593,29): error TS2339: Property 'page' does not exist on type '{}'.
+src/lib/services/admin.service.ts(593,49): error TS2339: Property 'pageSize' does not exist on type '{}'.
+src/lib/services/admin.service.ts(594,33): error TS2339: Property 'pageSize' does not exist on type '{}'.
+src/lib/services/admin.service.ts(604,19): error TS7006: Parameter 'orderId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(605,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(623,24): error TS7006: Parameter 'orderId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(623,33): error TS7006: Parameter 'status' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(623,41): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(623,50): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(624,38): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(633,41): error TS2339: Property 'confirmed_at' does not exist on type '{ status: any; }'.
+src/lib/services/admin.service.ts(634,39): error TS2339: Property 'shipped_at' does not exist on type '{ status: any; }'.
+src/lib/services/admin.service.ts(635,41): error TS2339: Property 'delivered_at' does not exist on type '{ status: any; }'.
+src/lib/services/admin.service.ts(636,41): error TS2339: Property 'cancelled_at' does not exist on type '{ status: any; }'.
+src/lib/services/admin.service.ts(638,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(652,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/admin.service.ts(661,31): error TS7006: Parameter 'orderId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(661,40): error TS7006: Parameter 'paymentStatus' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(661,55): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(661,64): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(662,38): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(668,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(682,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/admin.service.ts(691,19): error TS7006: Parameter 'orderId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(691,28): error TS7006: Parameter 'note' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(691,34): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(691,43): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(692,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(706,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/admin.service.ts(715,26): error TS7006: Parameter 'orderId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(715,35): error TS7006: Parameter 'trackingNumber' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(715,51): error TS7006: Parameter 'shippingCarrier' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(715,68): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(715,77): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(716,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(733,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/admin.service.ts(748,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(757,18): error TS7006: Parameter 'categoryData' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(757,32): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(757,41): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(758,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(771,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/admin.service.ts(780,18): error TS7006: Parameter 'categoryId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(780,30): error TS7006: Parameter 'updates' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(780,39): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(780,48): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(781,41): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(787,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(801,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/admin.service.ts(810,18): error TS7006: Parameter 'categoryId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(810,30): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(810,39): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(811,41): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(817,29): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(829,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/admin.service.ts(844,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(853,20): error TS7006: Parameter 'key' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(854,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(864,18): error TS7006: Parameter 'key' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(864,23): error TS7006: Parameter 'value' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(864,30): error TS7006: Parameter 'adminId' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(864,39): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/services/admin.service.ts(865,40): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(871,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/services/admin.service.ts(889,9): error TS2554: Expected 4-5 arguments, but got 7.
+src/lib/services/vehicles.ts(78,37): error TS2345: Argument of type 'string' is not assignable to parameter of type 'NonNullable<"new" | "foreign_used" | "nigerian_used" | "accident_free" | null>'.
+src/lib/services/vehicles.ts(82,37): error TS2345: Argument of type 'string' is not assignable to parameter of type 'NonNullable<"petrol" | "diesel" | "electric" | "hybrid" | "cng" | null>'.
+src/lib/services/vehicles.ts(86,40): error TS2345: Argument of type 'string' is not assignable to parameter of type 'NonNullable<"automatic" | "manual" | null>'.
+src/lib/supabase-server.ts(36,21): error TS7006: Parameter 'userId' implicitly has an 'any' type.
+src/lib/supabase-server.ts(38,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/supabase-server.ts(45,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/supabase-server.ts(53,28): error TS7006: Parameter 'userId' implicitly has an 'any' type.
+src/lib/supabase-server.ts(53,36): error TS7006: Parameter 'metadata' implicitly has an 'any' type.
+src/lib/supabase-server.ts(55,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/supabase-server.ts(62,20): error TS7006: Parameter 'userId' implicitly has an 'any' type.
+src/lib/supabase-server.ts(64,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/supabase-server.ts(69,22): error TS7006: Parameter 'userId' implicitly has an 'any' type.
+src/lib/supabase-server.ts(69,30): error TS7006: Parameter 'banned' implicitly has an 'any' type.
+src/lib/supabase-server.ts(71,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/supabase-server.ts(81,8): error TS7006: Parameter 'table' implicitly has an 'any' type.
+src/lib/supabase-server.ts(83,12): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/supabase-server.ts(87,13): error TS7006: Parameter 'functionName' implicitly has an 'any' type.
+src/lib/supabase-server.ts(89,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/supabase-server.ts(99,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/supabase-server.ts(104,13): error TS7006: Parameter 'bucketName' implicitly has an 'any' type.
+src/lib/supabase-server.ts(106,12): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/supabase-server.ts(110,20): error TS7006: Parameter 'bucketName' implicitly has an 'any' type.
+src/lib/supabase-server.ts(110,32): error TS7006: Parameter 'filePath' implicitly has an 'any' type.
+src/lib/supabase-server.ts(112,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/supabase-server.ts(129,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/supabase-server.ts(155,35): error TS18047: 'supabaseAdmin' is possibly 'null'.
+src/lib/utils/admin-auth.ts(14,44): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/utils/admin-auth.ts(19,7): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(supabaseUrl: string, supabaseKey: string, options: SupabaseClientOptions<"public"> & { cookieOptions?: CookieOptionsWithName | undefined; cookies: CookieMethodsServerDeprecated; cookieEncoding?: "raw" | ... 1 more ... | undefined; }): SupabaseClient<...>', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+  Overload 2 of 2, '(supabaseUrl: string, supabaseKey: string, options: SupabaseClientOptions<"public"> & { cookieOptions?: CookieOptionsWithName | undefined; cookies: CookieMethodsServer; cookieEncoding?: "raw" | ... 1 more ... | undefined; }): SupabaseClient<...>', gave the following error.
+    Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+src/lib/utils/admin-auth.ts(26,18): error TS7006: Parameter 'cookiesToSet' implicitly has an 'any' type.
+src/lib/utils/admin-auth.ts(28,39): error TS7031: Binding element 'name' implicitly has an 'any' type.
+src/lib/utils/admin-auth.ts(28,45): error TS7031: Binding element 'value' implicitly has an 'any' type.
+src/lib/utils/admin-auth.ts(28,52): error TS7031: Binding element 'options' implicitly has an 'any' type.
+src/lib/utils/admin-auth.ts(102,31): error TS7006: Parameter 'handler' implicitly has an 'any' type.
+src/lib/utils/admin-auth.ts(103,17): error TS7006: Parameter 'request' implicitly has an 'any' type.
+src/lib/utils/admin-auth.ts(103,26): error TS7006: Parameter 'context' implicitly has an 'any' type.
+src/lib/utils/admin-auth.ts(120,31): error TS7006: Parameter 'message' implicitly has an 'any' type.
+src/lib/utils/admin-auth.ts(127,14): error TS2339: Property 'details' does not exist on type '{ error: string; message: any; }'.
+src/lib/utils/admin-auth.ts(136,33): error TS7006: Parameter 'data' implicitly has an 'any' type.
+src/lib/utils/admin-auth.ts(143,37): error TS7006: Parameter 'searchParams' implicitly has an 'any' type.
+src/lib/validations/admin.ts(93,30): error TS7006: Parameter 'body' implicitly has an 'any' type.
+src/lib/validations/admin.ts(93,36): error TS7006: Parameter 'schema' implicitly has an 'any' type.
+src/lib/validations/admin.ts(115,31): error TS7006: Parameter 'searchParams' implicitly has an 'any' type.
+src/lib/validations/admin.ts(115,45): error TS7006: Parameter 'schema' implicitly has an 'any' type.

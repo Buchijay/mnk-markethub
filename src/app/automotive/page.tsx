@@ -8,9 +8,9 @@ import { CAR_MAKES, BODY_TYPES } from '@/lib/utils/constants';
 import { Car, Calendar, Gauge } from 'lucide-react';
 
 export default function AutomotivePage() {
-  const [vehicles, setVehicles] = useState([]);
+  const [vehicles, setVehicles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [popularMakes, setPopularMakes] = useState([]);
+  const [popularMakes, setPopularMakes] = useState<any[]>([]);
   
   const [filters, setFilters] = useState({
     make: '',
@@ -55,12 +55,12 @@ export default function AutomotivePage() {
           <p className="text-xl mb-8">Browse thousands of cars, bikes, and commercial vehicles</p>
 
           {/* Quick Search */}
-          <div className="bg-white rounded-lg shadow-lg p-6 max-w-5xl mx-auto">
+          <div className="bg-gray-900 border border-red-500/30 rounded-lg shadow-lg p-6 max-w-5xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <select
                 value={filters.make}
                 onChange={(e) => setFilters({ ...filters, make: e.target.value })}
-                className="px-4 py-3 border rounded-lg text-gray-700 focus:outline-none focus:border-red-500"
+                className="px-4 py-3 border border-gray-600 rounded-lg bg-gray-800 text-white focus:outline-none focus:border-red-500"
               >
                 <option value="">Select Make</option>
                 {CAR_MAKES.map(make => (
@@ -71,7 +71,7 @@ export default function AutomotivePage() {
               <select
                 value={filters.year_min}
                 onChange={(e) => setFilters({ ...filters, year_min: e.target.value })}
-                className="px-4 py-3 border rounded-lg text-gray-700 focus:outline-none focus:border-red-500"
+                className="px-4 py-3 border border-gray-600 rounded-lg bg-gray-800 text-white focus:outline-none focus:border-red-500"
               >
                 <option value="">Min Year</option>
                 {years.map(year => (
@@ -82,7 +82,7 @@ export default function AutomotivePage() {
               <select
                 value={filters.condition}
                 onChange={(e) => setFilters({ ...filters, condition: e.target.value })}
-                className="px-4 py-3 border rounded-lg text-gray-700 focus:outline-none focus:border-red-500"
+                className="px-4 py-3 border border-gray-600 rounded-lg bg-gray-800 text-white focus:outline-none focus:border-red-500"
               >
                 <option value="">Condition</option>
                 <option value="new">New</option>
@@ -93,7 +93,7 @@ export default function AutomotivePage() {
               <select
                 value={filters.body_type}
                 onChange={(e) => setFilters({ ...filters, body_type: e.target.value })}
-                className="px-4 py-3 border rounded-lg text-gray-700 focus:outline-none focus:border-red-500"
+                className="px-4 py-3 border border-gray-600 rounded-lg bg-gray-800 text-white focus:outline-none focus:border-red-500"
               >
                 <option value="">Body Type</option>
                 {BODY_TYPES.map(type => (
@@ -115,7 +115,7 @@ export default function AutomotivePage() {
       {/* Popular Makes */}
       <div className="bg-white py-8 border-b">
         <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold mb-6">Popular Makes</h2>
+          <h2 className="text-2xl font-bold mb-6 text-gray-900">Popular Makes</h2>
           <div className="flex flex-wrap gap-3">
             {popularMakes.map(make => (
               <button
@@ -139,28 +139,28 @@ export default function AutomotivePage() {
           {/* Filters Sidebar */}
           <aside className="lg:w-72 flex-shrink-0">
             <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
-              <h2 className="font-bold text-lg mb-6">Filter Results</h2>
+              <h2 className="font-bold text-lg mb-6 text-gray-900">Filter Results</h2>
 
               {/* Model */}
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">Model</label>
+                <label className="block text-sm font-semibold mb-2 text-gray-800">Model</label>
                 <input
                   type="text"
                   placeholder="e.g., Corolla, Accord..."
                   value={filters.model}
                   onChange={(e) => setFilters({ ...filters, model: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-red-500"
+                  className="w-full px-3 py-2 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-red-500"
                 />
               </div>
 
               {/* Year Range */}
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">Year Range</label>
+                <label className="block text-sm font-semibold mb-2 text-gray-800">Year Range</label>
                 <div className="grid grid-cols-2 gap-2">
                   <select
                     value={filters.year_min}
                     onChange={(e) => setFilters({ ...filters, year_min: e.target.value })}
-                    className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-red-500"
+                    className="px-3 py-2 border rounded-lg text-sm text-gray-900 focus:outline-none focus:border-red-500"
                   >
                     <option value="">Min</option>
                     {years.map(year => (
@@ -170,7 +170,7 @@ export default function AutomotivePage() {
                   <select
                     value={filters.year_max}
                     onChange={(e) => setFilters({ ...filters, year_max: e.target.value })}
-                    className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:border-red-500"
+                    className="px-3 py-2 border rounded-lg text-sm text-gray-900 focus:outline-none focus:border-red-500"
                   >
                     <option value="">Max</option>
                     {years.map(year => (
@@ -182,32 +182,32 @@ export default function AutomotivePage() {
 
               {/* Price Range */}
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">Price Range (₦)</label>
+                <label className="block text-sm font-semibold mb-2 text-gray-800">Price Range (₦)</label>
                 <div className="space-y-2">
                   <input
                     type="number"
                     placeholder="Min Price"
                     value={filters.minPrice}
                     onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-red-500"
+                    className="w-full px-3 py-2 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-red-500"
                   />
                   <input
                     type="number"
                     placeholder="Max Price"
                     value={filters.maxPrice}
                     onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-red-500"
+                    className="w-full px-3 py-2 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-red-500"
                   />
                 </div>
               </div>
 
               {/* Transmission */}
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">Transmission</label>
+                <label className="block text-sm font-semibold mb-2 text-gray-800">Transmission</label>
                 <select
                   value={filters.transmission}
                   onChange={(e) => setFilters({ ...filters, transmission: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-red-500"
+                  className="w-full px-3 py-2 border rounded-lg text-gray-900 focus:outline-none focus:border-red-500"
                 >
                   <option value="">All</option>
                   <option value="automatic">Automatic</option>
@@ -217,11 +217,11 @@ export default function AutomotivePage() {
 
               {/* Fuel Type */}
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">Fuel Type</label>
+                <label className="block text-sm font-semibold mb-2 text-gray-800">Fuel Type</label>
                 <select
                   value={filters.fuel_type}
                   onChange={(e) => setFilters({ ...filters, fuel_type: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-red-500"
+                  className="w-full px-3 py-2 border rounded-lg text-gray-900 focus:outline-none focus:border-red-500"
                 >
                   <option value="">All</option>
                   <option value="petrol">Petrol</option>
@@ -255,13 +255,13 @@ export default function AutomotivePage() {
           {/* Vehicles Grid */}
           <main className="flex-1">
             <div className="bg-white rounded-lg shadow-md p-4 mb-6 flex items-center justify-between">
-              <p className="text-gray-600">
-                {vehicles.length} vehicles found
+              <p className="text-gray-800">
+                <span className="font-bold text-gray-900">{vehicles.length}</span> vehicles found
               </p>
               <select
                 value={filters.sort}
                 onChange={(e) => setFilters({ ...filters, sort: e.target.value })}
-                className="px-4 py-2 border rounded-lg focus:outline-none focus:border-red-500"
+                className="px-4 py-2 border rounded-lg text-gray-900 focus:outline-none focus:border-red-500"
               >
                 <option value="newest">Newest First</option>
                 <option value="price_low">Price: Low to High</option>
@@ -281,7 +281,8 @@ export default function AutomotivePage() {
             ) : vehicles.length === 0 ? (
               <div className="bg-white rounded-lg shadow-md p-12 text-center">
                 <Car size={48} className="mx-auto text-gray-400 mb-4" />
-                <p className="text-gray-600 text-lg mb-4">No vehicles found</p>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">No vehicles found</h3>
+                <p className="text-gray-700 mb-4">Try adjusting your filters or search terms</p>
                 <button
                   onClick={() => setFilters({
                     make: '',

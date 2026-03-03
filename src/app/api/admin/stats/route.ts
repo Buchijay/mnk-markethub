@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server';
 import { createSupabaseServerClient } from '@/lib/supabase/server';
 import { verifyAdmin } from '@/lib/supabase-server';
 import { adminStats } from '@/lib/services/admin.service';
+import { logger } from '@/lib/utils/logger'
 
 // GET /api/admin/stats - Get dashboard statistics
 export async function GET(request) {
@@ -48,7 +49,7 @@ export async function GET(request) {
 
     return NextResponse.json({ data: result.data });
   } catch (error) {
-    console.error('Error fetching stats:', error);
+    logger.error('Error fetching stats:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

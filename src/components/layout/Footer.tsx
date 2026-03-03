@@ -48,23 +48,23 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/vendors" className="hover:text-amber-500 transition">
-                  Top Vendors
+                <Link href="/automotive" className="hover:text-amber-500 transition">
+                  Automotive
                 </Link>
               </li>
               <li>
-                <Link href="/deals" className="hover:text-amber-500 transition">
-                  Hot Deals
+                <Link href="/real-estate" className="hover:text-amber-500 transition">
+                  Real Estate
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-amber-500 transition">
-                  About Us
+                <Link href="/search" className="hover:text-amber-500 transition">
+                  Search
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-amber-500 transition">
-                  Contact Us
+                <Link href="/vendor/register" className="hover:text-amber-500 transition">
+                  Sell on MK Solution
                 </Link>
               </li>
             </ul>
@@ -133,14 +133,11 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-sm">
           {/* Legal Links */}
           <div className="flex flex-wrap gap-4">
-            <Link href="/privacy" className="hover:text-amber-500 transition">
-              Privacy Policy
+            <Link href="/auth/login" className="hover:text-amber-500 transition">
+              Sign In
             </Link>
-            <Link href="/terms" className="hover:text-amber-500 transition">
-              Terms of Service
-            </Link>
-            <Link href="/cookies" className="hover:text-amber-500 transition">
-              Cookie Policy
+            <Link href="/auth/register" className="hover:text-amber-500 transition">
+              Create Account
             </Link>
           </div>
 

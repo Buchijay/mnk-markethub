@@ -30,9 +30,8 @@ export default function HomePage() {
     setLoading(true)
     try {
       const { products } = await productsService.getAll({
-        is_featured: true,
         limit: 8,
-      } as any)
+      })
       setFeaturedProducts(products as FeaturedProduct[])
     } catch (error) {
       toast.error('Failed to load products')
@@ -66,19 +65,27 @@ export default function HomePage() {
   return (
     <div className="bg-white">
       {/* Hero Section - Premium Design */}
-      <section className="relative bg-gradient-to-br from-gray-900 via-amber-900 to-gray-900 text-white overflow-hidden min-h-screen flex items-center py-20">
-        {/* Animated Background */}
+      <section className="relative bg-gradient-to-br from-black via-gray-900 to-black text-white overflow-hidden min-h-screen flex items-center py-20">
+        {/* Subtle Background Pattern */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-amber-900/20 to-black/40"></div>
-          <svg className="absolute w-full h-full opacity-10" preserveAspectRatio="none">
-            <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
+          <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900 to-black"></div>
+          <div className="absolute inset-0 opacity-5" style={{
+            backgroundImage: 'radial-gradient(circle, #FFD700 1px, transparent 1px)',
+            backgroundSize: '50px 50px'
+          }}></div>
         </div>
+
+        <style jsx>{`
+          @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-3deg); }
+            75% { transform: rotate(3deg); }
+          }
+          @keyframes glow {
+            0%, 100% { box-shadow: 0 0 25px rgba(212, 175, 55, 0.4), 0 0 50px rgba(212, 175, 55, 0.2); }
+            50% { box-shadow: 0 0 45px rgba(212, 175, 55, 0.8), 0 0 80px rgba(212, 175, 55, 0.4); }
+          }
+        `}</style>
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-5xl mx-auto">
@@ -86,28 +93,29 @@ export default function HomePage() {
             <div className="text-center mb-12">
               <div className="inline-block mb-8">
                 <div className="relative">
-                  {/* Animated badge */}
-                  <div className="absolute -top-4 -right-4 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold animate-bounce">
-                    New
-                  </div>
-                  <div className="w-32 h-32 mx-auto mb-6 relative">
-                    {/* Animated gradient circle */}
-                    <div className="absolute inset-0 rounded-full bg-gradient-to-br from-amber-500 to-amber-600 opacity-20 animate-pulse"></div>
-                    <div className="absolute inset-2 rounded-full border-2 border-amber-500/50"></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="text-6xl font-bold bg-gradient-to-br from-amber-300 to-amber-500 bg-clip-text text-transparent">
-                        M
-                      </div>
-                    </div>
+                  <div className="w-52 h-52 mx-auto mb-6 relative" style={{ animation: 'shake 4s ease-in-out infinite' }}>
+                    {/* Outer glow */}
+                    <div className="absolute inset-0 rounded-full" style={{ animation: 'glow 2.5s ease-in-out infinite' }}></div>
+
+                    <Image
+                      src="/logo.svg"
+                      alt="MK Solution Ltd Logo"
+                      width={208}
+                      height={208}
+                      priority
+                      className="w-full h-full object-contain"
+                      style={{ filter: 'drop-shadow(0 0 24px rgba(255,224,102,0.7)) drop-shadow(0 0 48px rgba(212,175,55,0.4))' }}
+                    />
                   </div>
                 </div>
               </div>
 
               <h1 className="text-5xl md:text-7xl font-bold mb-4">
-                <span className="bg-gradient-to-r from-amber-300 via-amber-200 to-amber-300 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-yellow-500 via-yellow-300 to-yellow-500 bg-clip-text text-transparent">
                   MK Solution Ltd
                 </span>
               </h1>
+              <p className="text-xl text-yellow-400 mb-2">Your Trusted Marketplace</p>
               <p className="text-2xl md:text-3xl text-gray-200 mb-6">
                 Discover Amazing Products from Trusted Vendors
               </p>
@@ -121,14 +129,14 @@ export default function HomePage() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href="/products"
-                  className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-black px-8 py-4 rounded-lg font-bold shadow-xl transform hover:scale-105 transition flex items-center justify-center gap-2"
+                  className="bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-400 hover:to-yellow-500 text-black px-8 py-4 rounded-lg font-bold shadow-xl transform hover:scale-105 transition flex items-center justify-center gap-2"
                 >
                   <ShoppingBag size={20} />
                   Start Shopping
                 </Link>
                 <Link
                   href="/vendor/register"
-                  className="bg-white/10 hover:bg-white/20 border-2 border-amber-400 text-white px-8 py-4 rounded-lg font-bold transition transform hover:scale-105 flex items-center justify-center gap-2 backdrop-blur"
+                  className="bg-white/10 hover:bg-white/20 border-2 border-yellow-500 text-yellow-500 px-8 py-4 rounded-lg font-bold transition transform hover:scale-105 flex items-center justify-center gap-2 backdrop-blur"
                 >
                   <TrendingUp size={20} />
                   Become a Vendor
@@ -139,28 +147,28 @@ export default function HomePage() {
             {/* Features Bar */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 bg-white/10 backdrop-blur-md rounded-2xl p-8">
               <div className="flex items-center gap-3">
-                <Truck className="text-amber-400" size={24} />
+                <Truck className="text-yellow-400" size={24} />
                 <div>
                   <p className="font-semibold text-white">Fast Delivery</p>
                   <p className="text-sm text-gray-300">Nationwide shipping</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Shield className="text-amber-400" size={24} />
+                <Shield className="text-yellow-400" size={24} />
                 <div>
                   <p className="font-semibold text-white">Secure Payment</p>
                   <p className="text-sm text-gray-300">100% protected</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Star className="text-amber-400" size={24} />
+                <Star className="text-yellow-400" size={24} />
                 <div>
                   <p className="font-semibold text-white">Quality Products</p>
                   <p className="text-sm text-gray-300">Verified only</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Zap className="text-amber-400" size={24} />
+                <Zap className="text-yellow-400" size={24} />
                 <div>
                   <p className="font-semibold text-white">Best Prices</p>
                   <p className="text-sm text-gray-300">Competitive rates</p>
@@ -205,7 +213,7 @@ export default function HomePage() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
               {featuredProducts.map((product) => (
-                <ProductCard key={product.id} product={product as any} view="grid" />
+                <ProductCard key={product.id} product={product as unknown as import('@/lib/types/database.types').ProductWithVendor} view="grid" />
               ))}
             </div>
           )}

@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase/client'
 import { Product, ProductFilterOptions, ProductsResponse, ProductResponse } from '@/lib/types/products'
+import { logger } from '@/lib/utils/logger'
 
 export interface ProductFilters {
   category?: string
@@ -65,44 +66,38 @@ export async function getProducts(
     const { data, error, count } = await query
 
     if (error) {
-      console.error('Error fetching products:', error)
+      logger.error('Error fetching products:', error)
       return { products: [], error, count: 0 }
     }
 
-    // Fetch vendor and category details separately for each product
+    // Batch-fetch vendor and category data to avoid N+1 queries
     if (data && data.length > 0) {
-      const enrichedData = await Promise.all(
-        data.map(async (product: any) => {
-          let vendor = null
-          let category = null
+      const vendorIds = [...new Set(data.map((p: any) => p.vendor_id).filter(Boolean))]
+      const categoryIds = [...new Set(data.map((p: any) => p.category_id).filter(Boolean))]
 
-          if (product.vendor_id) {
-            const { data: vendorData } = await supabase
-              .from('vendors')
-              .select('id, business_name, slug, rating, logo_url, total_reviews, total_sales, verification_status')
-              .eq('id', product.vendor_id)
-              .single()
-            vendor = vendorData
-          }
+      const [vendorsResult, categoriesResult] = await Promise.all([
+        vendorIds.length > 0
+          ? supabase.from('vendors').select('id, business_name, slug, rating, logo_url, total_reviews, total_sales, verification_status').in('id', vendorIds)
+          : Promise.resolve({ data: [] }),
+        categoryIds.length > 0
+          ? supabase.from('categories').select('id, name, slug').in('id', categoryIds)
+          : Promise.resolve({ data: [] }),
+      ])
 
-          if (product.category_id) {
-            const { data: categoryData } = await supabase
-              .from('categories')
-              .select('id, name, slug')
-              .eq('id', product.category_id)
-              .single()
-            category = categoryData
-          }
+      const vendorMap = new Map((vendorsResult.data || []).map((v: any) => [v.id, v]))
+      const categoryMap = new Map((categoriesResult.data || []).map((c: any) => [c.id, c]))
 
-          return { ...product, vendor, category }
-        })
-      )
+      const enrichedData = data.map((product: any) => ({
+        ...product,
+        vendor: vendorMap.get(product.vendor_id) || null,
+        category: categoryMap.get(product.category_id) || null,
+      }))
       return { products: enrichedData, error: null, count: count || 0 }
     }
 
-    return { products: data || [], error: null, count: count || 0 }
+    return { products: (data || []) as unknown as Product[], error: null, count: count || 0 }
   } catch (error) {
-    console.error('Error in getProducts:', error)
+    logger.error('Error in getProducts:', error)
     return { products: [], error, count: 0 }
   }
 }
@@ -117,34 +112,34 @@ export async function getProductBySlug(slug: string): Promise<ProductResponse> {
       .single()
 
     if (error) {
-      console.error('Error fetching product:', error)
+      logger.error('Error fetching product:', error)
       return { product: null, error }
     }
 
     // Enrich with vendor and category data
-    let enrichedData: any = { ...(data as any) }
+    let enrichedData: Record<string, unknown> = { ...data }
 
-    if ((data as any)?.vendor_id) {
+    if (data?.vendor_id) {
       const { data: vendorData } = await supabase
         .from('vendors')
         .select('id, business_name, slug, rating, total_reviews, total_sales, logo_url, description, verification_status')
-        .eq('id', (data as any).vendor_id)
+        .eq('id', data.vendor_id)
         .single()
       enrichedData.vendor = vendorData
     }
 
-    if ((data as any)?.category_id) {
+    if (data?.category_id) {
       const { data: categoryData } = await supabase
         .from('categories')
         .select('id, name, slug')
-        .eq('id', (data as any).category_id)
+        .eq('id', data.category_id)
         .single()
       enrichedData.category = categoryData
     }
 
-    return { product: enrichedData, error: null }
+    return { product: enrichedData as unknown as Product, error: null }
   } catch (error) {
-    console.error('Error in getProductBySlug:', error)
+    logger.error('Error in getProductBySlug:', error)
     return { product: null, error }
   }
 }
@@ -174,40 +169,38 @@ export async function getRelatedProducts(
       .order('created_at', { ascending: false })
 
     if (error) {
-      console.error('Error fetching related products:', error)
+      logger.error('Error fetching related products:', error)
       return { products: [], error }
     }
 
-    // Enrich with vendor data
-    const enrichedData = await Promise.all(
-      (data || []).map(async (product: any) => {
-        let vendor = null
-        if (product.vendor_id) {
-          const { data: vendorData } = await supabase
-            .from('vendors')
-            .select('id, business_name, slug, rating')
-            .eq('id', product.vendor_id)
-            .single()
-          vendor = vendorData
-        }
-        return { ...product, vendor }
-      })
-    )
+    // Batch-fetch vendor data
+    const vendorIds = [...new Set((data || []).map((p: any) => p.vendor_id).filter(Boolean))]
+    const vendorsResult = vendorIds.length > 0
+      ? await supabase.from('vendors').select('id, business_name, slug, rating').in('id', vendorIds)
+      : { data: [] }
+    const vendorMap = new Map((vendorsResult.data || []).map((v: any) => [v.id, v]))
+
+    const enrichedData = (data || []).map((product: any) => ({
+      ...product,
+      vendor: vendorMap.get(product.vendor_id) || null,
+    }))
 
     return { products: enrichedData, error: null }
   } catch (error) {
-    console.error('Error in getRelatedProducts:', error)
+    logger.error('Error in getRelatedProducts:', error)
     return { products: [], error }
   }
 }
 
 class ProductsServiceClass {
-  async getAll(filters: ProductFilters = {}) {
+  async getAll(filters: ProductFilters & { limit?: number; offset?: number } = {}) {
     const options: ProductFilterOptions = {
       search: filters.search,
       category: filters.category,
       minPrice: filters.minPrice,
       maxPrice: filters.maxPrice,
+      limit: filters.limit,
+      offset: filters.offset,
     }
 
     if (filters.sort === 'price_low') {

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/hooks/useAuth'
+import { logger } from '@/lib/utils/logger'
 import {
   User,
   Mail,
@@ -34,9 +35,6 @@ export default function ProfilePage() {
   useEffect(() => {
     setMounted(true)
   }, [])
-
-  // Debug logging
-  console.log('Profile Page State:', { mounted, loading, user: !!user, profile: !!profile })
 
   useEffect(() => {
     if (mounted && !loading && !user) {
@@ -71,8 +69,8 @@ export default function ProfilePage() {
       }
       
       // Type assertion needed due to Supabase TypeScript inference limitations
-      const profilesTable: ReturnType<typeof supabase.from> = supabase.from('profiles') as any
-      const result = await profilesTable
+      const result = await supabase
+        .from('profiles')
         .update(updateData)
         .eq('id', user.id)
 
@@ -80,7 +78,7 @@ export default function ProfilePage() {
       setIsEditing(false)
       router.refresh()
     } catch (error) {
-      console.error('Error updating profile:', error)
+      logger.error('Error updating profile:', error)
     } finally {
       setIsUpdating(false)
     }
@@ -91,7 +89,7 @@ export default function ProfilePage() {
       await supabase.auth.signOut()
       router.push('/')
     } catch (error) {
-      console.error('Error logging out:', error)
+      logger.error('Error logging out:', error)
     }
   }
 

@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase/client'
 import type { Property } from '@/lib/types/database.types'
+import { logger } from '@/lib/utils/logger'
 
 export interface PropertyFilters {
   search?: string
@@ -21,9 +22,9 @@ export async function getPropertyBySlug(slug: string) {
       .single()
 
     if (error) throw error
-    return { property: data as any, error: null }
+    return { property: data as unknown as Property & { vendor: any }, error: null }
   } catch (error) {
-    console.error('Error fetching property:', error)
+    logger.error('Error fetching property:', error)
     return { property: null, error }
   }
 }
@@ -79,9 +80,9 @@ export async function getPropertiesByFilters(filters: PropertyFilters) {
     const { data, error, count } = await query
 
     if (error) throw error
-    return { properties: (data || []) as any[], count, error: null }
+    return { properties: (data || []) as unknown as (Property & { vendor: any })[], count, error: null }
   } catch (error) {
-    console.error('Error fetching properties:', error)
+    logger.error('Error fetching properties:', error)
     return { properties: [], count: 0, error }
   }
 }
@@ -98,9 +99,9 @@ export async function getRelatedProperties(propertyId: string, locationArea: str
       .limit(limit)
 
     if (error) throw error
-    return { properties: (data || []) as any[], error: null }
+    return { properties: (data || []) as unknown as (Property & { vendor: any })[], error: null }
   } catch (error) {
-    console.error('Error fetching related properties:', error)
+    logger.error('Error fetching related properties:', error)
     return { properties: [], error }
   }
 }

@@ -1,16 +1,17 @@
 // src/lib/supabase.js
 import { createBrowserClient } from '@supabase/ssr';
+import { logger } from '@/lib/utils/logger'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseUrl.startsWith('http')) {
-  console.error('Invalid Supabase URL:', supabaseUrl);
+  logger.error('Invalid Supabase URL:', supabaseUrl);
   throw new Error('Missing or invalid NEXT_PUBLIC_SUPABASE_URL');
 }
 
 if (!supabaseAnonKey) {
-  console.error('Missing Supabase Anon Key');
+  logger.error('Missing Supabase Anon Key');
   throw new Error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY');
 }
 

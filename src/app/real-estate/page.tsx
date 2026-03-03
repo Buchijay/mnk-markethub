@@ -8,7 +8,7 @@ import { NIGERIAN_STATES, PROPERTY_TYPES } from '@/lib/utils/constants';
 import { MapPin, Home, DollarSign } from 'lucide-react';
 
 export default function RealEstatePage() {
-  const [properties, setProperties] = useState([]);
+  const [properties, setProperties] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   
   const [filters, setFilters] = useState({
@@ -28,7 +28,7 @@ export default function RealEstatePage() {
 
   async function loadProperties() {
     setLoading(true);
-    const { data } = await propertiesService.getAll(filters);
+    const { properties: data } = await propertiesService.getPropertiesByFilters(filters);
     setProperties(data || []);
     setLoading(false);
   }
@@ -42,12 +42,12 @@ export default function RealEstatePage() {
           <p className="text-xl mb-8">Explore thousands of properties for rent and sale across Nigeria</p>
           
           {/* Quick Filters */}
-          <div className="bg-white rounded-lg shadow-lg p-6 max-w-4xl mx-auto">
+          <div className="bg-gray-900 border border-green-500/30 rounded-lg shadow-lg p-6 max-w-4xl mx-auto">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <select
                 value={filters.listing_type}
                 onChange={(e) => setFilters({ ...filters, listing_type: e.target.value })}
-                className="px-4 py-3 border rounded-lg text-gray-700 focus:outline-none focus:border-green-500"
+                className="px-4 py-3 border border-gray-600 rounded-lg bg-gray-800 text-white focus:outline-none focus:border-green-500"
               >
                 <option value="">All Types</option>
                 <option value="rent">For Rent</option>
@@ -58,7 +58,7 @@ export default function RealEstatePage() {
               <select
                 value={filters.state}
                 onChange={(e) => setFilters({ ...filters, state: e.target.value })}
-                className="px-4 py-3 border rounded-lg text-gray-700 focus:outline-none focus:border-green-500"
+                className="px-4 py-3 border border-gray-600 rounded-lg bg-gray-800 text-white focus:outline-none focus:border-green-500"
               >
                 <option value="">Select State</option>
                 {NIGERIAN_STATES.map(state => (
@@ -69,7 +69,7 @@ export default function RealEstatePage() {
               <select
                 value={filters.bedrooms}
                 onChange={(e) => setFilters({ ...filters, bedrooms: e.target.value })}
-                className="px-4 py-3 border rounded-lg text-gray-700 focus:outline-none focus:border-green-500"
+                className="px-4 py-3 border border-gray-600 rounded-lg bg-gray-800 text-white focus:outline-none focus:border-green-500"
               >
                 <option value="">Bedrooms</option>
                 <option value="1">1 Bed</option>
@@ -98,8 +98,8 @@ export default function RealEstatePage() {
               <Home className="text-green-600" size={32} />
             </div>
             <div>
-              <p className="text-3xl font-bold">{properties.length}</p>
-              <p className="text-gray-600">Properties Available</p>
+              <p className="text-3xl font-bold text-gray-900">{properties.length}</p>
+              <p className="text-gray-700 font-medium">Properties Available</p>
             </div>
           </div>
           <div className="bg-white rounded-lg shadow-md p-6 flex items-center gap-4">
@@ -107,8 +107,8 @@ export default function RealEstatePage() {
               <MapPin className="text-blue-600" size={32} />
             </div>
             <div>
-              <p className="text-3xl font-bold">36</p>
-              <p className="text-gray-600">States Covered</p>
+              <p className="text-3xl font-bold text-gray-900">36</p>
+              <p className="text-gray-700 font-medium">States Covered</p>
             </div>
           </div>
           <div className="bg-white rounded-lg shadow-md p-6 flex items-center gap-4">
@@ -116,8 +116,8 @@ export default function RealEstatePage() {
               <DollarSign className="text-yellow-600" size={32} />
             </div>
             <div>
-              <p className="text-3xl font-bold">₦500k+</p>
-              <p className="text-gray-600">Starting Prices</p>
+              <p className="text-3xl font-bold text-gray-900">₦500k+</p>
+              <p className="text-gray-700 font-medium">Starting Prices</p>
             </div>
           </div>
         </div>
@@ -126,15 +126,15 @@ export default function RealEstatePage() {
           {/* Advanced Filters Sidebar */}
           <aside className="lg:w-72 flex-shrink-0">
             <div className="bg-white rounded-lg shadow-md p-6 sticky top-4">
-              <h2 className="font-bold text-lg mb-6">Refine Search</h2>
+              <h2 className="font-bold text-lg mb-6 text-gray-900">Refine Search</h2>
 
               {/* Property Type */}
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">Property Type</label>
+                <label className="block text-sm font-semibold mb-2 text-gray-800">Property Type</label>
                 <select
                   value={filters.category}
                   onChange={(e) => setFilters({ ...filters, category: e.target.value })}
-                  className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-green-500"
+                  className="w-full px-3 py-2 border rounded-lg text-gray-900 focus:outline-none focus:border-green-500"
                 >
                   <option value="">All Types</option>
                   {PROPERTY_TYPES.map(type => (
@@ -145,21 +145,21 @@ export default function RealEstatePage() {
 
               {/* Price Range */}
               <div className="mb-6">
-                <label className="block text-sm font-medium mb-2">Price Range (₦)</label>
+                <label className="block text-sm font-semibold mb-2 text-gray-800">Price Range (₦)</label>
                 <div className="space-y-2">
                   <input
                     type="number"
                     placeholder="Min Price"
                     value={filters.minPrice}
                     onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-green-500"
+                    className="w-full px-3 py-2 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500"
                   />
                   <input
                     type="number"
                     placeholder="Max Price"
                     value={filters.maxPrice}
                     onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-green-500"
+                    className="w-full px-3 py-2 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500"
                   />
                 </div>
               </div>
@@ -167,13 +167,13 @@ export default function RealEstatePage() {
               {/* City */}
               {filters.state && (
                 <div className="mb-6">
-                  <label className="block text-sm font-medium mb-2">City</label>
+                  <label className="block text-sm font-semibold mb-2 text-gray-800">City</label>
                   <input
                     type="text"
                     placeholder="Enter city..."
                     value={filters.city}
                     onChange={(e) => setFilters({ ...filters, city: e.target.value })}
-                    className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-green-500"
+                    className="w-full px-3 py-2 border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:border-green-500"
                   />
                 </div>
               )}
@@ -199,8 +199,8 @@ export default function RealEstatePage() {
           {/* Properties Grid */}
           <main className="flex-1">
             <div className="bg-white rounded-lg shadow-md p-4 mb-6">
-              <p className="text-gray-600">
-                Showing {properties.length} properties
+              <p className="text-gray-800">
+                Showing <span className="font-bold text-gray-900">{properties.length}</span> properties
                 {filters.state && ` in ${filters.state}`}
                 {filters.listing_type && ` for ${filters.listing_type}`}
               </p>
@@ -215,7 +215,8 @@ export default function RealEstatePage() {
             ) : properties.length === 0 ? (
               <div className="bg-white rounded-lg shadow-md p-12 text-center">
                 <MapPin size={48} className="mx-auto text-gray-400 mb-4" />
-                <p className="text-gray-600 text-lg mb-4">No properties found matching your criteria</p>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">No properties found</h3>
+                <p className="text-gray-700 mb-4">Try adjusting your filters or search terms</p>
                 <button
                   onClick={() => setFilters({
                     listing_type: '',

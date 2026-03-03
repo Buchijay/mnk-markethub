@@ -278,62 +278,118 @@ export type Message = {
   created_at: string
 }
 
+export type Category = {
+  id: string
+  name: string
+  slug: string
+  description: string | null
+  image_url: string | null
+  parent_id: string | null
+  is_active: boolean
+  sort_order: number
+  created_at: string
+  updated_at: string
+}
+
+export type Conversation = {
+  id: string
+  user_id: string
+  vendor_id: string
+  last_message: string | null
+  last_message_at: string | null
+  unread_count: number
+  created_at: string
+  updated_at: string
+}
+
+export type OrderItem = {
+  id: string
+  order_id: string
+  product_id: string
+  vendor_id: string
+  product_name: string
+  product_image: string | null
+  quantity: number
+  price: number
+  total: number
+  status: string
+  created_at: string
+}
+
 // Database interface must come AFTER the type definitions it references
 export interface Database {
   public: {
     Tables: {
       profiles: {
         Row: Profile
-        Insert: Omit<Profile, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<Profile, 'id' | 'created_at'>>
+        Insert: Partial<Profile> & Pick<Profile, 'email'>
+        Update: Partial<Profile>
         Relationships: []
       }
       vendors: {
         Row: Vendor
-        Insert: Omit<Vendor, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<Vendor, 'id' | 'created_at'>>
+        Insert: Partial<Vendor> & Pick<Vendor, 'user_id' | 'business_name' | 'slug'>
+        Update: Partial<Vendor>
         Relationships: []
       }
       products: {
         Row: Product
-        Insert: Omit<Product, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<Product, 'id' | 'created_at'>>
+        Insert: Partial<Product> & Pick<Product, 'vendor_id' | 'name' | 'slug' | 'price'>
+        Update: Partial<Product>
         Relationships: []
       }
       properties: {
         Row: Property
-        Insert: Omit<Property, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<Property, 'id' | 'created_at'>>
+        Insert: Partial<Property> & Pick<Property, 'vendor_id' | 'title' | 'slug' | 'price' | 'listing_type'>
+        Update: Partial<Property>
         Relationships: []
       }
       vehicles: {
         Row: Vehicle
-        Insert: Omit<Vehicle, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<Vehicle, 'id' | 'created_at'>>
+        Insert: Partial<Vehicle> & Pick<Vehicle, 'vendor_id' | 'title' | 'slug' | 'price' | 'make' | 'model' | 'year'>
+        Update: Partial<Vehicle>
         Relationships: []
       }
       reviews: {
         Row: Review
-        Insert: Omit<Review, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<Review, 'id' | 'created_at'>>
+        Insert: Partial<Review> & Pick<Review, 'user_id' | 'vendor_id' | 'rating'>
+        Update: Partial<Review>
         Relationships: []
       }
       orders: {
         Row: Order
-        Insert: Omit<Order, 'id' | 'created_at' | 'updated_at'>
-        Update: Partial<Omit<Order, 'id' | 'created_at'>>
+        Insert: Partial<Order> & Pick<Order, 'user_id' | 'order_number' | 'total'>
+        Update: Partial<Order>
         Relationships: []
       }
       favorites: {
         Row: Favorite
-        Insert: Omit<Favorite, 'id' | 'created_at'>
-        Update: Partial<Omit<Favorite, 'id' | 'created_at'>>
+        Insert: Partial<Favorite> & Pick<Favorite, 'user_id' | 'item_type' | 'item_id'>
+        Update: Partial<Favorite>
         Relationships: []
       }
       messages: {
         Row: Message
-        Insert: Omit<Message, 'id' | 'created_at'>
-        Update: Partial<Omit<Message, 'id'>>
+        Insert: Partial<Message> & Pick<Message, 'sender_id' | 'receiver_id' | 'content'>
+        Update: Partial<Message>
+        Relationships: []
+      }
+      categories: {
+        Row: Category
+        Insert: Partial<Category> & Pick<Category, 'name' | 'slug'>
+        Update: Partial<Category>
+        Relationships: []
+      }
+      order_items: {
+        Row: OrderItem
+        Insert: Partial<OrderItem> & Pick<OrderItem, 'order_id' | 'product_id' | 'vendor_id' | 'quantity' | 'price' | 'total'>
+        Update: Partial<OrderItem>
+        Relationships: []
+      }
+      conversations: {
+        Row: Conversation
+        Insert: Partial<Conversation> & Pick<Conversation, 'user_id' | 'vendor_id'>
+        Update: Partial<Conversation>
         Relationships: []
       }
     }
@@ -366,15 +422,4 @@ export type PropertyWithVendor = Property & {
 export type VehicleWithVendor = Vehicle & {
   vendor: Vendor | null
   category: { id: string; name: string; slug: string } | null
-}
-
-export type Conversation = {
-  id: string
-  user_id: string
-  vendor_id: string
-  last_message: string | null
-  last_message_at: string | null
-  unread_count: number
-  created_at: string
-  updated_at: string
 }

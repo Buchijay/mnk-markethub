@@ -7,6 +7,7 @@ import { getPropertyBySlug, getRelatedProperties } from '@/lib/services/properti
 import { useAuth } from '@/lib/hooks/useAuth'
 import { addFavorite, removeFavorite, isFavorited } from '@/lib/services/favorites'
 import toast from 'react-hot-toast'
+import { logger } from '@/lib/utils/logger'
 import {
   Heart,
   Share2,
@@ -60,7 +61,7 @@ export default function PropertyDetailPage() {
         }
       }
     } catch (error) {
-      console.error('Error loading property:', error)
+      logger.error('Error loading property:', error)
       toast.error('Failed to load property')
     } finally {
       setLoading(false)
@@ -92,7 +93,7 @@ export default function PropertyDetailPage() {
         toast.success('Added to favorites')
       }
     } catch (error) {
-      console.error('Error toggling favorite:', error)
+      logger.error('Error toggling favorite:', error)
       toast.error('Failed to update favorites')
     }
   }
@@ -312,7 +313,7 @@ export default function PropertyDetailPage() {
                 ].map((tab) => (
                   <button
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id as any)}
+                    onClick={() => setActiveTab(tab.id as 'overview' | 'details' | 'amenities')}
                     className={`flex-1 px-6 py-4 text-center font-medium transition-colors ${
                       activeTab === tab.id
                         ? 'text-blue-600 border-b-2 border-blue-600'

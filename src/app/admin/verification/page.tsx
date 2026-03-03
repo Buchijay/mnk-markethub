@@ -2,17 +2,8 @@
 
 import { useState, useEffect } from "react"
 import VerificationQueue from "@/components/admin/VerificationQueue"
-import { getVerificationQueue } from "@/lib/services/admin/verification"
-
-interface VerificationItem {
-  id: string
-  type: "vendor" | "product" | "property" | "vehicle"
-  title: string
-  submittedBy: string
-  submittedDate: string
-  status: "pending" | "flagged" | "approved"
-  reason?: string
-}
+import { getVerificationQueue, approveVerificationItem, rejectVerificationItem, type VerificationItem } from "@/lib/services/admin/verification"
+import { logger } from '@/lib/utils/logger'
 
 export default function VerificationPage() {
   const [queue, setQueue] = useState<VerificationItem[]>([])
@@ -27,7 +18,7 @@ export default function VerificationPage() {
         setQueue(data)
       } catch (err) {
         setError("Failed to fetch verification queue")
-        console.error(err as unknown)
+        logger.error(err instanceof Error ? err.message : String(err))
       } finally {
         setLoading(false)
       }
@@ -35,6 +26,44 @@ export default function VerificationPage() {
 
     fetchQueue()
   }, [filter])
+
+  // Approve handler
+  const handleApprove = async (item: VerificationItem) => {
+    try {
+      setLoading(true)
+      if (item.type === 'product') {
+        setError('Products cannot be verified')
+        return
+      }
+      await approveVerificationItem(item.id, item.type)
+      setQueue((q) => q.map((i) => i.id === item.id ? { ...i, status: 'approved', reason: undefined } : i))
+    } catch (err) {
+      setError('Failed to approve item')
+      logger.error(err instanceof Error ? err.message : String(err))
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Reject handler (prompt for reason)
+  const handleReject = async (item: VerificationItem) => {
+    const reason = window.prompt('Enter rejection reason:')
+    if (!reason) return
+    try {
+      setLoading(true)
+      if (item.type === 'product') {
+        setError('Products cannot be verified')
+        return
+      }
+      await rejectVerificationItem(item.id, item.type, reason)
+      setQueue((q) => q.map((i) => i.id === item.id ? { ...i, status: 'flagged', reason } : i))
+    } catch (err) {
+      setError('Failed to reject item')
+      logger.error(err instanceof Error ? err.message : String(err))
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div>
@@ -73,7 +102,13 @@ export default function VerificationPage() {
         </button>
       </div>
 
-      <VerificationQueue items={queue} loading={loading} error={error} />
+      <VerificationQueue
+        items={queue}
+        loading={loading}
+        error={error}
+        onApprove={handleApprove}
+        onReject={handleReject}
+      />
     </div>
   )
 }

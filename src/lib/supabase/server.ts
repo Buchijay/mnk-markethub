@@ -36,6 +36,6 @@ export async function createSupabaseServerClient() {
 export const supabase = {
   async from(table: string) {
     const client = await createSupabaseServerClient()
-    return client.from(table as any)
+    return client.from(table as keyof Database['public']['Tables'])
   }
 }

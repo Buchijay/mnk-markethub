@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import KPICard from "@/components/admin/KPICard"
 import KPIChart from "@/components/admin/KPIChart"
 import { getAdminKPIs } from "@/lib/services/admin/kpi"
+import { logger } from '@/lib/utils/logger'
 
 interface KPIData {
   totalRevenue: number
@@ -33,7 +34,7 @@ export default function AdminDashboard() {
         setKpis(data)
       } catch (err) {
         setError("Failed to fetch KPIs")
-        console.error(err as unknown)
+        logger.error(err instanceof Error ? err.message : String(err))
       } finally {
         setLoading(false)
       }

@@ -6,6 +6,7 @@ import { supabase } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/hooks/useAuth'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
+import { logger } from '@/lib/utils/logger'
 import {
   Store,
   User,
@@ -207,7 +208,7 @@ export default function VendorRegisterPage() {
         if (!userId) throw new Error('Failed to create account')
 
         // Create profile
-        const { error: profileError } = await (supabase as any).from('profiles').upsert({
+        const { error: profileError } = await supabase.from('profiles').upsert({
           id: userId,
           email: formData.email,
           full_name: formData.full_name,
@@ -221,10 +222,9 @@ export default function VendorRegisterPage() {
         if (profileError) throw profileError
       } else {
         // Update existing profile to vendor role
-        const profilesTable: any = supabase.from('profiles')
-        const { error: profileError } = await profilesTable
+        const { error: profileError } = await supabase.from('profiles')
           .update({ role: 'vendor' })
-          .eq('id', userId)
+          .eq('id', userId!)
 
         if (profileError) throw profileError
       }
@@ -232,7 +232,7 @@ export default function VendorRegisterPage() {
       // Step 2: Create vendor record
       const slug = formData.slug || generateSlug(formData.business_name)
 
-      const { error: vendorError } = await (supabase as any).from('vendors').insert({
+      const { error: vendorError } = await supabase.from('vendors').insert({
         user_id: userId!,
         business_name: formData.business_name,
         business_type: formData.business_type,
@@ -266,7 +266,7 @@ export default function VendorRegisterPage() {
       toast.success('Vendor registration submitted! We will review your application shortly.')
       router.push('/vendor/dashboard')
     } catch (error: any) {
-      console.error('Registration error:', error)
+      logger.error('Registration error:', error)
       toast.error(error.message || 'Registration failed. Please try again.')
     } finally {
       setLoading(false)

@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server';
 import { validateAdminRequest, errorResponse, successResponse } from '@/lib/utils/admin-auth';
 import { orderQuerySchema, validateQuery } from '@/lib/validations/admin';
 import { adminDb } from '@/lib/supabase-server';
+import { logger } from '@/lib/utils/logger'
 
 export async function GET(request) {
   // Validate admin authentication
@@ -105,7 +106,7 @@ export async function GET(request) {
     const { data: orders, error, count } = await query;
 
     if (error) {
-      console.error('Error fetching orders:', error);
+      logger.error('Error fetching orders:', error);
       return errorResponse('Failed to fetch orders', 500);
     }
 
@@ -147,7 +148,7 @@ export async function GET(request) {
       },
     });
   } catch (error) {
-    console.error('Orders API error:', error);
+    logger.error('Orders API error:', error);
     return errorResponse('Internal server error', 500);
   }
 }

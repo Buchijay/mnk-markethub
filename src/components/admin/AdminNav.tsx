@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { LayoutDashboard, Settings, CheckCircle, LogOut } from "lucide-react"
+import { LayoutDashboard, Settings, CheckCircle, LogOut, Package, ShoppingCart, Store, Users } from "lucide-react"
 import { supabase } from "@/lib/supabase/client"
 
 const AdminNav = () => {
@@ -16,9 +16,13 @@ const AdminNav = () => {
   }
 
   const menuItems = [
-    { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/admin/manage", label: "Manage", icon: Settings },
+    { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+    { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
+    { href: "/admin/products", label: "Products", icon: Package },
+    { href: "/admin/vendors", label: "Vendors", icon: Store },
+    { href: "/admin/manage", label: "Manage", icon: Users },
     { href: "/admin/verification", label: "Verification", icon: CheckCircle },
+    { href: "/admin/settings", label: "Settings", icon: Settings },
   ]
 
   return (
@@ -33,7 +37,7 @@ const AdminNav = () => {
         <ul className="space-y-2">
           {menuItems.map((item) => {
             const Icon = item.icon
-            const isActive = pathname === item.href
+            const isActive = item.href === '/admin' ? pathname === '/admin' : pathname.startsWith(item.href)
 
             return (
               <li key={item.href}>

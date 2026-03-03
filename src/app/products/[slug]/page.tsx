@@ -6,7 +6,9 @@ import Link from 'next/link'
 import { getProductBySlug, getRelatedProducts } from '@/lib/services/products'
 import { useAuth } from '@/lib/hooks/useAuth'
 import { addFavorite, removeFavorite, isFavorited } from '@/lib/services/favorites'
+import { getReviewsForItem, getReviewStats, submitReview, markReviewHelpful, type Review, type ReviewStats } from '@/lib/services/reviews'
 import toast from 'react-hot-toast'
+import { logger } from '@/lib/utils/logger'
 import {
   Star,
   ShoppingCart,
@@ -22,6 +24,8 @@ import {
   CheckCircle2,
   MessageSquare,
   Package,
+  ThumbsUp,
+  User,
 } from 'lucide-react'
 
 interface CartItem {
@@ -49,6 +53,12 @@ export default function ProductDetailPage() {
   const [isFav, setIsFav] = useState(false)
   const [activeTab, setActiveTab] = useState<'overview' | 'specifications' | 'reviews'>('overview')
 
+  // Reviews state
+  const [reviews, setReviews] = useState<Review[]>([])
+  const [reviewStats, setReviewStats] = useState<ReviewStats>({ average: 0, total: 0, distribution: { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 } })
+  const [reviewForm, setReviewForm] = useState({ rating: 5, title: '', comment: '' })
+  const [submittingReview, setSubmittingReview] = useState(false)
+
   useEffect(() => {
     if (slug) loadProduct()
   }, [slug])
@@ -65,13 +75,14 @@ export default function ProductDetailPage() {
       const { product: data, error } = await getProductBySlug(slug)
       if (data) {
         setProduct(data)
+        loadReviews(data.id)
         if (data.category_id) {
           const { products } = await getRelatedProducts(data.id, data.category_id, 4)
           setRelatedProducts(products)
         }
       }
     } catch (error) {
-      console.error('Error loading product:', error)
+      logger.error('Error loading product:', error)
       toast.error('Failed to load product')
     } finally {
       setLoading(false)
@@ -103,7 +114,7 @@ export default function ProductDetailPage() {
         toast.success('Added to favorites')
       }
     } catch (error) {
-      console.error('Error toggling favorite:', error)
+      logger.error('Error toggling favorite:', error)
       toast.error('Failed to update favorites')
     }
   }
@@ -153,6 +164,53 @@ export default function ProductDetailPage() {
     setSelectedImageIndex((prev) =>
       prev === (product.images?.length || 1) - 1 ? 0 : prev + 1
     )
+  }
+
+  async function loadReviews(productId: string) {
+    try {
+      const [{ reviews: data }, stats] = await Promise.all([
+        getReviewsForItem(productId, 'products'),
+        getReviewStats(productId, 'products'),
+      ])
+      setReviews(data)
+      setReviewStats(stats)
+    } catch {
+      // Reviews are non-critical; silently fail
+    }
+  }
+
+  async function handleSubmitReview(e: React.FormEvent) {
+    e.preventDefault()
+    if (!user || !product) return
+
+    setSubmittingReview(true)
+    try {
+      await submitReview({
+        item_id: product.id,
+        vertical: 'products',
+        vendor_id: product.vendor_id,
+        user_id: user.id,
+        rating: reviewForm.rating,
+        title: reviewForm.title || undefined,
+        comment: reviewForm.comment || undefined,
+      })
+      toast.success('Review submitted!')
+      setReviewForm({ rating: 5, title: '', comment: '' })
+      loadReviews(product.id)
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Failed to submit review')
+    } finally {
+      setSubmittingReview(false)
+    }
+  }
+
+  async function handleHelpful(reviewId: string) {
+    try {
+      await markReviewHelpful(reviewId)
+      setReviews(prev => prev.map(r => r.id === reviewId ? { ...r, helpful_count: r.helpful_count + 1 } : r))
+    } catch {
+      toast.error('Failed to mark as helpful')
+    }
   }
 
   const formatPrice = (price: number) => {
@@ -360,7 +418,7 @@ export default function ProductDetailPage() {
                 ].map((tab) => (
                   <button
                     key={tab.id}
-                    onClick={() => setActiveTab(tab.id as any)}
+                    onClick={() => setActiveTab(tab.id as 'overview' | 'specifications' | 'reviews')}
                     className={`flex-1 px-6 py-4 text-center font-medium transition-colors ${
                       activeTab === tab.id
                         ? 'text-blue-600 border-b-2 border-blue-600'
@@ -418,10 +476,118 @@ export default function ProductDetailPage() {
                 )}
 
                 {activeTab === 'reviews' && (
-                  <div className="text-center py-12">
-                    <Star className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <h4 className="text-lg font-semibold text-gray-900 mb-2">No Reviews Yet</h4>
-                    <p className="text-gray-600">Be the first to review this product.</p>
+                  <div className="space-y-8">
+                    {/* Rating Overview */}
+                    <div className="flex flex-col md:flex-row gap-8 items-start">
+                      <div className="text-center">
+                        <p className="text-5xl font-bold text-gray-900">{reviewStats.average.toFixed(1)}</p>
+                        <div className="flex justify-center my-2">
+                          {[1, 2, 3, 4, 5].map(s => (
+                            <Star key={s} className={`w-5 h-5 ${s <= Math.round(reviewStats.average) ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}`} />
+                          ))}
+                        </div>
+                        <p className="text-sm text-gray-600">{reviewStats.total} review{reviewStats.total !== 1 ? 's' : ''}</p>
+                      </div>
+                      <div className="flex-1 space-y-1.5 w-full">
+                        {([5, 4, 3, 2, 1] as const).map(star => {
+                          const count = reviewStats.distribution[star]
+                          const pct = reviewStats.total ? (count / reviewStats.total) * 100 : 0
+                          return (
+                            <div key={star} className="flex items-center gap-2 text-sm">
+                              <span className="w-3 text-gray-700">{star}</span>
+                              <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
+                              <div className="flex-1 bg-gray-200 rounded-full h-2 overflow-hidden">
+                                <div className="bg-yellow-500 h-full rounded-full transition-all" style={{ width: `${pct}%` }} />
+                              </div>
+                              <span className="w-8 text-right text-gray-500">{count}</span>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Submit Review Form */}
+                    {user ? (
+                      <form onSubmit={handleSubmitReview} className="bg-gray-50 rounded-lg p-5 space-y-4">
+                        <h4 className="font-semibold text-gray-900">Write a Review</h4>
+                        <div>
+                          <label className="block text-sm text-gray-700 mb-1">Rating</label>
+                          <div className="flex gap-1">
+                            {[1, 2, 3, 4, 5].map(s => (
+                              <button key={s} type="button" onClick={() => setReviewForm(f => ({ ...f, rating: s }))}>
+                                <Star className={`w-7 h-7 transition ${s <= reviewForm.rating ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300 hover:text-yellow-300'}`} />
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <input
+                          type="text" placeholder="Review title (optional)"
+                          value={reviewForm.title}
+                          onChange={(e) => setReviewForm(f => ({ ...f, title: e.target.value }))}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                        <textarea
+                          rows={3} placeholder="Share your experience…"
+                          value={reviewForm.comment}
+                          onChange={(e) => setReviewForm(f => ({ ...f, comment: e.target.value }))}
+                          className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        />
+                        <button type="submit" disabled={submittingReview}
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-medium disabled:opacity-50 transition">
+                          {submittingReview ? 'Submitting…' : 'Submit Review'}
+                        </button>
+                      </form>
+                    ) : (
+                      <div className="bg-gray-50 rounded-lg p-5 text-center">
+                        <p className="text-gray-600 text-sm">
+                          <Link href="/auth/login" className="text-blue-600 hover:underline font-medium">Sign in</Link> to leave a review.
+                        </p>
+                      </div>
+                    )}
+
+                    {/* Review List */}
+                    {reviews.length > 0 ? (
+                      <div className="divide-y divide-gray-200">
+                        {reviews.map(review => (
+                          <div key={review.id} className="py-5 first:pt-0">
+                            <div className="flex items-start gap-3">
+                              <div className="bg-gray-200 rounded-full p-2 flex-shrink-0">
+                                <User className="w-5 h-5 text-gray-500" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="font-medium text-gray-900 text-sm">
+                                    {review.profiles?.full_name || 'Anonymous'}
+                                  </span>
+                                  <div className="flex">
+                                    {[1, 2, 3, 4, 5].map(s => (
+                                      <Star key={s} className={`w-3.5 h-3.5 ${s <= review.rating ? 'text-yellow-500 fill-yellow-500' : 'text-gray-300'}`} />
+                                    ))}
+                                  </div>
+                                  <span className="text-xs text-gray-500">
+                                    {new Date(review.created_at).toLocaleDateString()}
+                                  </span>
+                                </div>
+                                {review.title && <p className="font-medium text-gray-900 text-sm mb-1">{review.title}</p>}
+                                {review.comment && <p className="text-gray-700 text-sm">{review.comment}</p>}
+                                <button
+                                  onClick={() => handleHelpful(review.id)}
+                                  className="flex items-center gap-1 mt-2 text-xs text-gray-500 hover:text-blue-600 transition"
+                                >
+                                  <ThumbsUp className="w-3.5 h-3.5" />
+                                  Helpful ({review.helpful_count})
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <Star className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+                        <p className="text-gray-600 text-sm">No reviews yet. Be the first!</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

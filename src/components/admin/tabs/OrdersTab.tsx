@@ -2,16 +2,16 @@
 
 import { useState, useEffect } from "react"
 import { Search, Eye, Trash2 } from "lucide-react"
+// import { supabase } from "@/lib/supabase/client"
 
 interface Order {
   id: string
-  orderNumber: string
-  customer: string
-  vendor: string
+  order_number: string
+  status: "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled"
   total: number
-  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled"
-  items: number
-  date: string
+  created_at: string
+  user_id: string
+  shipping_address: Record<string, string> | null
 }
 
 const OrdersTab = () => {
@@ -20,45 +20,27 @@ const OrdersTab = () => {
   const [searchTerm, setSearchTerm] = useState("")
 
   useEffect(() => {
-    // Mock data - replace with actual API call
-    const mockOrders: Order[] = [
-      {
-        id: "o1",
-        orderNumber: "ORD-001",
-        customer: "John Doe",
-        vendor: "Tech Store",
-        total: 129.99,
-        status: "shipped",
-        items: 2,
-        date: "2024-02-10",
-      },
-      {
-        id: "o2",
-        orderNumber: "ORD-002",
-        customer: "Jane Smith",
-        vendor: "Fashion Hub",
-        total: 249.98,
-        status: "delivered",
-        items: 1,
-        date: "2024-02-08",
-      },
-    ]
-    setOrders(mockOrders)
-    setLoading(false)
+    setLoading(true)
+    fetch('/api/admin/orders')
+      .then(res => res.json())
+      .then(data => setOrders(data.orders || []))
+      .catch(() => setOrders([]))
+      .finally(() => setLoading(false))
   }, [])
 
   const filteredOrders = orders.filter(
     (order) =>
-      order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customer.toLowerCase().includes(searchTerm.toLowerCase())
+      order.order_number?.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   const getStatusColor = (
-    status: "pending" | "processing" | "shipped" | "delivered" | "cancelled"
+    status: string
   ) => {
     switch (status) {
       case "pending":
         return "bg-yellow-100 text-yellow-800"
+      case "confirmed":
+        return "bg-teal-100 text-teal-800"
       case "processing":
         return "bg-blue-100 text-blue-800"
       case "shipped":
@@ -95,62 +77,27 @@ const OrdersTab = () => {
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                Order #
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                Customer
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                Vendor
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                Items
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                Total
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                Status
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                Date
-              </th>
-              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">
-                Actions
-              </th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Order #</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Total</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Status</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Date</th>
+              <th className="px-6 py-3 text-left text-sm font-semibold text-gray-900">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
             {filteredOrders.map((order) => (
               <tr key={order.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                  {order.orderNumber}
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-600">
-                  {order.customer}
-                </td>
-                <td className="px-6 py-4 text-sm text-gray-600">{order.vendor}</td>
-                <td className="px-6 py-4 text-sm text-gray-600">{order.items}</td>
-                <td className="px-6 py-4 text-sm font-medium text-gray-900">
-                  ${order.total.toFixed(2)}
-                </td>
+                <td className="px-6 py-4 text-sm font-medium text-gray-900">{order.order_number}</td>
+                <td className="px-6 py-4 text-sm font-medium text-gray-900">₦{order.total?.toLocaleString()}</td>
                 <td className="px-6 py-4 text-sm">
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                      order.status
-                    )}`}
-                  >
-                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
+                    {order.status?.charAt(0).toUpperCase() + order.status?.slice(1)}
                   </span>
                 </td>
-                <td className="px-6 py-4 text-sm text-gray-600">{order.date}</td>
+                <td className="px-6 py-4 text-sm text-gray-600">{new Date(order.created_at).toLocaleDateString()}</td>
                 <td className="px-6 py-4 text-sm flex gap-2">
-                  <button className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition">
+                  <button onClick={() => window.location.href = `/admin/orders`} className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition">
                     <Eye size={18} />
-                  </button>
-                  <button className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition">
-                    <Trash2 size={18} />
                   </button>
                 </td>
               </tr>
