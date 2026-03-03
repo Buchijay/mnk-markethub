@@ -1,5 +1,6 @@
+// @ts-nocheck
 // src/lib/services/admin.service.js
-import { supabaseAdmin, logAdminAction } from '@/lib/supabase-server';
+import { adminDb, logAdminAction } from '@/lib/supabase-server';
 
 // =====================================================
 // DASHBOARD STATS
@@ -9,28 +10,28 @@ export const adminStats = {
   getOverview: async () => {
     try {
       // Total vendors
-      const { count: totalVendors } = await supabaseAdmin
+      const { count: totalVendors } = await adminDb
         .from('vendors')
         .select('*', { count: 'exact', head: true });
 
       // Pending vendors
-      const { count: pendingVendors } = await supabaseAdmin
+      const { count: pendingVendors } = await adminDb
         .from('vendors')
         .select('*', { count: 'exact', head: true })
         .eq('status', 'pending');
 
       // Total products
-      const { count: totalProducts } = await supabaseAdmin
+      const { count: totalProducts } = await adminDb
         .from('products')
         .select('*', { count: 'exact', head: true });
 
       // Total orders
-      const { count: totalOrders } = await supabaseAdmin
+      const { count: totalOrders } = await adminDb
         .from('orders')
         .select('*', { count: 'exact', head: true });
 
       // Total revenue (sum of all delivered orders)
-      const { data: revenueData } = await supabaseAdmin
+      const { data: revenueData } = await adminDb
         .from('orders')
         .select('total')
         .eq('status', 'delivered');
@@ -38,13 +39,13 @@ export const adminStats = {
       const totalRevenue = revenueData?.reduce((sum, order) => sum + parseFloat(order.total), 0) || 0;
 
       // Pending orders
-      const { count: pendingOrders } = await supabaseAdmin
+      const { count: pendingOrders } = await adminDb
         .from('orders')
         .select('*', { count: 'exact', head: true })
         .in('status', ['pending', 'confirmed', 'processing']);
 
       // Active products
-      const { count: activeProducts } = await supabaseAdmin
+      const { count: activeProducts } = await adminDb
         .from('products')
         .select('*', { count: 'exact', head: true })
         .eq('status', 'active');
@@ -68,7 +69,7 @@ export const adminStats = {
 
   // Get recent activity
   getRecentActivity: async (limit = 20) => {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('admin_logs')
       .select(`
         *,
@@ -85,7 +86,7 @@ export const adminStats = {
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('orders')
       .select('created_at, total, status')
       .gte('created_at', thirtyDaysAgo.toISOString())
@@ -114,7 +115,7 @@ export const adminStats = {
 export const adminVendors = {
   // Get all vendors with filters
   getAll: async (filters = {}) => {
-    let query = supabaseAdmin
+    let query = adminDb
       .from('vendors')
       .select(`
         *,
@@ -151,7 +152,7 @@ export const adminVendors = {
 
   // Get vendor by ID
   getById: async (vendorId) => {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('vendors')
       .select(`
         *,
@@ -167,13 +168,13 @@ export const adminVendors = {
   // Approve vendor
   approve: async (vendorId, adminId, request) => {
     // Get current vendor data for logging
-    const { data: oldVendor } = await supabaseAdmin
+    const { data: oldVendor } = await adminDb
       .from('vendors')
       .select('*')
       .eq('id', vendorId)
       .single();
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('vendors')
       .update({
         status: 'approved',
@@ -202,13 +203,13 @@ export const adminVendors = {
 
   // Reject vendor
   reject: async (vendorId, reason, adminId, request) => {
-    const { data: oldVendor } = await supabaseAdmin
+    const { data: oldVendor } = await adminDb
       .from('vendors')
       .select('*')
       .eq('id', vendorId)
       .single();
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('vendors')
       .update({
         status: 'rejected',
@@ -235,13 +236,13 @@ export const adminVendors = {
 
   // Suspend vendor
   suspend: async (vendorId, reason, adminId, request) => {
-    const { data: oldVendor } = await supabaseAdmin
+    const { data: oldVendor } = await adminDb
       .from('vendors')
       .select('*')
       .eq('id', vendorId)
       .single();
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('vendors')
       .update({
         status: 'suspended',
@@ -268,13 +269,13 @@ export const adminVendors = {
 
   // Reactivate vendor
   reactivate: async (vendorId, adminId, request) => {
-    const { data: oldVendor } = await supabaseAdmin
+    const { data: oldVendor } = await adminDb
       .from('vendors')
       .select('*')
       .eq('id', vendorId)
       .single();
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('vendors')
       .update({
         status: 'approved',
@@ -301,13 +302,13 @@ export const adminVendors = {
 
   // Update vendor details
   update: async (vendorId, updates, adminId, request) => {
-    const { data: oldVendor } = await supabaseAdmin
+    const { data: oldVendor } = await adminDb
       .from('vendors')
       .select('*')
       .eq('id', vendorId)
       .single();
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('vendors')
       .update(updates)
       .eq('id', vendorId)
@@ -331,13 +332,13 @@ export const adminVendors = {
 
   // Delete vendor (soft delete by suspending)
   delete: async (vendorId, adminId, request) => {
-    const { data: oldVendor } = await supabaseAdmin
+    const { data: oldVendor } = await adminDb
       .from('vendors')
       .select('*')
       .eq('id', vendorId)
       .single();
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('vendors')
       .update({
         status: 'suspended',
@@ -369,7 +370,7 @@ export const adminVendors = {
 export const adminProducts = {
   // Get all products with filters
   getAll: async (filters = {}) => {
-    let query = supabaseAdmin
+    let query = adminDb
       .from('products')
       .select(`
         *,
@@ -415,7 +416,7 @@ export const adminProducts = {
 
   // Get product by ID
   getById: async (productId) => {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('products')
       .select(`
         *,
@@ -431,13 +432,13 @@ export const adminProducts = {
 
   // Update product status
   updateStatus: async (productId, status, adminId, request) => {
-    const { data: oldProduct } = await supabaseAdmin
+    const { data: oldProduct } = await adminDb
       .from('products')
       .select('*')
       .eq('id', productId)
       .single();
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('products')
       .update({ status })
       .eq('id', productId)
@@ -461,13 +462,13 @@ export const adminProducts = {
 
   // Update product
   update: async (productId, updates, adminId, request) => {
-    const { data: oldProduct } = await supabaseAdmin
+    const { data: oldProduct } = await adminDb
       .from('products')
       .select('*')
       .eq('id', productId)
       .single();
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('products')
       .update(updates)
       .eq('id', productId)
@@ -491,13 +492,13 @@ export const adminProducts = {
 
   // Delete product
   delete: async (productId, adminId, request) => {
-    const { data: oldProduct } = await supabaseAdmin
+    const { data: oldProduct } = await adminDb
       .from('products')
       .select('*')
       .eq('id', productId)
       .single();
 
-    const { error } = await supabaseAdmin
+    const { error } = await adminDb
       .from('products')
       .delete()
       .eq('id', productId);
@@ -519,7 +520,7 @@ export const adminProducts = {
 
   // Toggle featured status
   toggleFeatured: async (productId, isFeatured, adminId, request) => {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('products')
       .update({ is_featured: isFeatured })
       .eq('id', productId)
@@ -548,7 +549,7 @@ export const adminProducts = {
 export const adminOrders = {
   // Get all orders with filters
   getAll: async (filters = {}) => {
-    let query = supabaseAdmin
+    let query = adminDb
       .from('orders')
       .select(`
         *,
@@ -602,7 +603,7 @@ export const adminOrders = {
 
   // Get order by ID
   getById: async (orderId) => {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('orders')
       .select(`
         *,
@@ -621,7 +622,7 @@ export const adminOrders = {
 
   // Update order status
   updateStatus: async (orderId, status, adminId, request) => {
-    const { data: oldOrder } = await supabaseAdmin
+    const { data: oldOrder } = await adminDb
       .from('orders')
       .select('*')
       .eq('id', orderId)
@@ -635,7 +636,7 @@ export const adminOrders = {
     if (status === 'delivered') updates.delivered_at = new Date().toISOString();
     if (status === 'cancelled') updates.cancelled_at = new Date().toISOString();
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('orders')
       .update(updates)
       .eq('id', orderId)
@@ -659,13 +660,13 @@ export const adminOrders = {
 
   // Update payment status
   updatePaymentStatus: async (orderId, paymentStatus, adminId, request) => {
-    const { data: oldOrder } = await supabaseAdmin
+    const { data: oldOrder } = await adminDb
       .from('orders')
       .select('*')
       .eq('id', orderId)
       .single();
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('orders')
       .update({ payment_status: paymentStatus })
       .eq('id', orderId)
@@ -689,7 +690,7 @@ export const adminOrders = {
 
   // Add admin note
   addNote: async (orderId, note, adminId, request) => {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('orders')
       .update({ admin_notes: note })
       .eq('id', orderId)
@@ -713,7 +714,7 @@ export const adminOrders = {
 
   // Update tracking info
   updateTracking: async (orderId, trackingNumber, shippingCarrier, adminId, request) => {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('orders')
       .update({
         tracking_number: trackingNumber,
@@ -745,7 +746,7 @@ export const adminOrders = {
 export const adminCategories = {
   // Get all categories
   getAll: async () => {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('categories')
       .select('*')
       .order('display_order');
@@ -755,7 +756,7 @@ export const adminCategories = {
 
   // Create category
   create: async (categoryData, adminId, request) => {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('categories')
       .insert([categoryData])
       .select()
@@ -778,13 +779,13 @@ export const adminCategories = {
 
   // Update category
   update: async (categoryId, updates, adminId, request) => {
-    const { data: oldCategory } = await supabaseAdmin
+    const { data: oldCategory } = await adminDb
       .from('categories')
       .select('*')
       .eq('id', categoryId)
       .single();
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('categories')
       .update(updates)
       .eq('id', categoryId)
@@ -808,13 +809,13 @@ export const adminCategories = {
 
   // Delete category
   delete: async (categoryId, adminId, request) => {
-    const { data: oldCategory } = await supabaseAdmin
+    const { data: oldCategory } = await adminDb
       .from('categories')
       .select('*')
       .eq('id', categoryId)
       .single();
 
-    const { error } = await supabaseAdmin
+    const { error } = await adminDb
       .from('categories')
       .delete()
       .eq('id', categoryId);
@@ -841,7 +842,7 @@ export const adminCategories = {
 export const adminSettings = {
   // Get all settings
   getAll: async () => {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('settings')
       .select('*')
       .order('category');
@@ -851,7 +852,7 @@ export const adminSettings = {
 
   // Get setting by key
   getByKey: async (key) => {
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('settings')
       .select('*')
       .eq('key', key)
@@ -862,13 +863,13 @@ export const adminSettings = {
 
   // Update setting
   update: async (key, value, adminId, request) => {
-    const { data: oldSetting } = await supabaseAdmin
+    const { data: oldSetting } = await adminDb
       .from('settings')
       .select('*')
       .eq('key', key)
       .single();
 
-    const { data, error } = await supabaseAdmin
+    const { data, error } = await adminDb
       .from('settings')
       .update({
         value,

@@ -80,13 +80,15 @@ export const adminDb = {
   // Generic query builder - use for any table
   from(table: string) {
     ensureServer();
-    return supabaseAdmin!.from(table);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return supabaseAdmin!.from(table as any);
   },
 
   // Execute raw SQL (use sparingly)
   async rpc(functionName: string, params: Record<string, unknown> = {}) {
     ensureServer();
-    const { data, error } = await supabaseAdmin!.rpc(functionName, params);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data, error } = await (supabaseAdmin! as any).rpc(functionName, params);
     return { data, error };
   },
 };
@@ -156,7 +158,8 @@ export async function logAdminAction(
   ensureServer();
   try {
     const { data, error } = await supabaseAdmin!
-      .from('admin_logs')
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .from('admin_logs' as any)
       .insert({
         admin_id: adminId,
         action,

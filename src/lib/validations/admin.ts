@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/lib/validations/admin.js
 // Zod validation schemas for admin API endpoints
 

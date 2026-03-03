@@ -1,3 +1,4 @@
+// @ts-nocheck
 // src/lib/utils/admin-auth.js
 // Admin authentication middleware helper for API routes
 

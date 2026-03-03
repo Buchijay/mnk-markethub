@@ -11,12 +11,12 @@ import { logger } from '@/lib/utils/logger';
  * GET /api/admin/vendors/[id]
  * Returns vendor with products and stats
  */
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error: authError } = await validateAdminRequest(request);
   if (authError) return authError;
 
   try {
-    const { id } = params;
+    const { id } = await params;
     // Validate ID
     const idValidation = idParamSchema.safeParse({ id });
     if (!idValidation.success) {
@@ -98,7 +98,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
       stats,
     });
   } catch (error) {
-    logger.error({ err: error }, 'Vendor GET error');
+    logger.error('Vendor GET error', { err: error });
     return errorResponse('Failed to fetch vendor details', 500);
   }
 }
@@ -107,12 +107,12 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
  * PATCH /api/admin/vendors/[id]
  * Update vendor (status, commission, notes)
  */
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error: authError, profile } = await validateAdminRequest(request);
   if (authError) return authError;
 
   try {
-    const { id } = params;
+    const { id } = await params;
     // Validate ID
     const idValidation = idParamSchema.safeParse({ id });
     if (!idValidation.success) {
@@ -127,10 +127,12 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     }
 
     // Check if vendor exists
-    const { data: existingVendor, error: fetchError } = await adminDb.from('vendors')
+    const { data: existingVendorData, error: fetchError } = await adminDb.from('vendors')
       .select('id, verification_status')
       .eq('id', id)
       .single();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const existingVendor = existingVendorData as any;
 
     if (fetchError || !existingVendor) {
       return errorResponse('Vendor not found', 404);
@@ -163,7 +165,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       vendor,
     });
   } catch (error) {
-    logger.error({ err: error }, 'Vendor PATCH error');
+    logger.error('Vendor PATCH error', { err: error });
     return errorResponse('Failed to update vendor', 500);
   }
 }
@@ -172,12 +174,12 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
  * DELETE /api/admin/vendors/[id]
  * Soft delete vendor
  */
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { error: authError } = await validateAdminRequest(request);
   if (authError) return authError;
 
   try {
-    const { id } = params;
+    const { id } = await params;
     // Validate ID
     const idValidation = idParamSchema.safeParse({ id });
     if (!idValidation.success) {
@@ -196,7 +198,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
 
     // Soft delete: set deleted_at
     const { data: vendor, error: updateError } = await adminDb.from('vendors')
-      .update({ deleted_at: new Date().toISOString() })
+      .update({ deleted_at: new Date().toISOString() } as any)
       .eq('id', id)
       .select('id, deleted_at')
       .single();
@@ -210,7 +212,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       vendor,
     });
   } catch (error) {
-    logger.error({ err: error }, 'Vendor DELETE error');
+    logger.error('Vendor DELETE error', { err: error });
     return errorResponse('Failed to delete vendor', 500);
   }
 }

@@ -1,13 +1,13 @@
 // src/app/api/admin/vendors/route.js
 // GET /api/admin/vendors - Returns paginated vendors list
 
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { validateAdminRequest, errorResponse, successResponse } from '@/lib/utils/admin-auth';
 import { vendorQuerySchema, validateQuery } from '@/lib/validations/admin';
 import { adminDb } from '@/lib/supabase-server';
 import { logger } from '@/lib/utils/logger'
 
-export async function GET(request) {
+export async function GET(request: NextRequest) {
   // Validate admin authentication
   const { error: authError } = await validateAdminRequest(request);
   if (authError) return authError;
